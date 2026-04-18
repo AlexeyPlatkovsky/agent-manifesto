@@ -339,7 +339,7 @@ Prompts and audits must derive mandatory capabilities from the protocol layer ra
 
 Rules:
 - inspect canonical protocol files under `protocols/`
-- exclude `protocols/README.md` from capability derivation
+- exclude `protocols/_README.md` from capability derivation
 - determine project size before deciding which protocols are mandatory
 - read each protocol's `Project Applicability` and `Implementation status`
 - for every mandatory protocol, require a corresponding skill named after the protocol filename basename

@@ -1,7 +1,7 @@
 ---
 version: 1.2.2
 project: agent-manifest
-url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/protocols/README.md
+url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/protocols/_README.md
 ---
 
 # Protocols

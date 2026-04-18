@@ -10,7 +10,7 @@ url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/02_review.md
 
 Before starting, ensure the following files are available in this session:
 - `MANIFEST.md` — canonical source of truth
-- `protocols/README.md` — index of canonical protocols
+- `protocols/_README.md` — index of canonical protocols
 - all canonical protocol files under `protocols/` required by this framework version
 - Your full instruction system: `AGENTS.md`, all skills, workflows, agents, and reference docs
 
@@ -163,7 +163,7 @@ If completion gates are optional rather than mandatory → **Major violation**.
 
 ### 9. Protocol Inventory and Applicability
 
-- Read every canonical protocol file under `protocols/`, excluding `protocols/README.md`
+- Read every canonical protocol file under `protocols/`, excluding `protocols/_README.md`
 - Determine project size from context (contributor count, domain count, workflow complexity)
 - For each protocol, determine whether it applies to the project's size and whether its `Implementation status` makes it mandatory
 - Derive the expected mandatory skill from the protocol filename basename unless the project's AI tool requires a different but equivalent path convention

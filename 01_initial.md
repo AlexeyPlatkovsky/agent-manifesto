@@ -10,7 +10,7 @@ url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/01_initial.md
 
 Before starting, ensure the following files are available in this session:
 - `MANIFEST.md` — canonical source of truth
-- `protocols/README.md` — index of canonical protocols
+- `protocols/_README.md` — index of canonical protocols
 - all canonical protocol files under `protocols/` required by this framework version
 
 If any are missing, stop and ask the user to provide them.
@@ -211,7 +211,7 @@ Replace them with the concrete capability the generated system requires.
 
 ### Required: Protocol-Derived Mandatory Skills
 
-Determine the mandatory skills by reading the canonical protocol files under `protocols/`, excluding `protocols/README.md`.
+Determine the mandatory skills by reading the canonical protocol files under `protocols/`, excluding `protocols/_README.md`.
 
 For each protocol that is mandatory for the confirmed project size:
 - create the corresponding skill using the protocol filename basename as the default skill name

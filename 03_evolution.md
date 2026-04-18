@@ -10,7 +10,7 @@ url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/03_evolution.m
 
 Before starting, ensure the following files are available in this session:
 - `MANIFEST.md` — canonical source of truth
-- `protocols/README.md` — index of canonical protocols
+- `protocols/_README.md` — index of canonical protocols
 - all canonical protocol files under `protocols/` relevant to the current system
 - Your current instruction system: `AGENTS.md`, all skills, workflows, and agents
 
