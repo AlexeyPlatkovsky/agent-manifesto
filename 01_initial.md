@@ -1,5 +1,5 @@
 ---
-version: 1.2.0
+version: 1.2.1
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/01_initial.md
 ---
@@ -10,8 +10,9 @@ url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/01_initial.md
 
 Before starting, ensure the following files are available in this session:
 - `MANIFEST.md` — canonical source of truth
-- `brainstorm.md` — canonical brainstorming behavior
-- `task_complete.md` — canonical task completion behavior
+- `protocols/brainstorm.md` — canonical brainstorming behavior
+- `protocols/task_complete.md` — canonical task completion behavior
+- `protocols/manager.md` — canonical manager behavior for medium and large projects
 
 If any are missing, stop and ask the user to provide them.
 
@@ -20,6 +21,11 @@ If any are missing, stop and ask the user to provide them.
 ## Purpose
 
 Your task is to create a minimal, correct AI instruction system for this project — or adjust the existing one — so it fully aligns with `MANIFEST.md`.
+
+You must also:
+- ask the user two mandatory questions during Discussion: intended project size and which AI tools are in use
+- ensure every AI tool entry point routes to `AGENTS.md`
+- derive mandatory skills from the applicable protocols
 
 The goal is the **smallest coherent system that fits the project today**.
 Do not design for a future that does not yet exist.
@@ -35,7 +41,7 @@ Work in exactly 3 phases. Do not skip or merge phases.
 2. **Discussion** — resolve key decisions with the user
 3. **Composition** — create or adjust the instruction system
 
-During Discussion: follow `brainstorm.md` exactly.
+During Discussion: follow `protocols/brainstorm.md` exactly.
 During Composition: do not return to discussion.
 
 ---
@@ -67,7 +73,12 @@ Investigate the repository thoroughly before forming any opinions.
 - Does routing logic exist?
 - Does the current setup violate `MANIFEST.md`?
 
-### E. Reusable Project Knowledge
+### E. AI Tool Surface
+- Which AI tools are already configured or obviously intended? (Claude Code, Cursor, Codex, etc.)
+- Do tool-specific files exist?
+- Do those files defer to `AGENTS.md` or duplicate policy?
+
+### F. Reusable Project Knowledge
 Identify whether the project needs reference docs such as:
 - architecture overview
 - code conventions
@@ -98,15 +109,22 @@ Do NOT propose solutions yet.
 
 Resolve the decisions identified in Phase 1 with the user.
 
-Follow `brainstorm.md` for all discussion behavior:
+Follow `protocols/brainstorm.md` for all discussion behavior:
 - one question at a time
 - 2–3 concrete options per question
 - highlight trade-offs and risks
 - stop and wait after each question
 - never mix discussion with execution
 
+The first two questions are mandatory, even if the repository suggests an answer:
+1. confirm the intended project size (`small`, `medium`, or `large`)
+2. identify which AI tools are in use now or must be supported immediately
+
+Ask them one at a time, following `protocols/brainstorm.md`.
+
 Focus discussion on high-impact decisions only:
 - appropriate project scale assumption
+- how each AI tool should be wired to `AGENTS.md`
 - whether workflows are justified
 - whether subagents are justified
 - which reference docs are worth creating
@@ -128,12 +146,14 @@ Only begin after the user confirms the decision summary.
 
 - `MANIFEST.md` is the canonical source — never contradict it
 - `AGENTS.md` is the project-level operational contract
+- all tool-specific adapters must defer to `AGENTS.md`
 - Policy and execution must be separated
 - Root instructions must stay compact
 - Detailed procedures must be modular
 - No duplicated logic across files
 - Complexity must be progressively disclosed
 - The system must match the actual project scale
+- mandatory skills must be derived from the applicable protocols
 
 ### Required: Mandatory Gate Language in AGENTS.md
 
@@ -181,7 +201,7 @@ Replace them with the concrete capability the generated system requires.
 This is mandatory per `MANIFEST.md`.
 
 Create `.claude/skills/brainstorm/SKILL.md` that:
-- references `brainstorm.md` as its behavior source
+- references `protocols/brainstorm.md` as its behavior source
 - does not redefine the protocol inline
 - is registered in `AGENTS.md`
 
@@ -189,23 +209,37 @@ Create `.claude/skills/brainstorm/SKILL.md` that:
 This is mandatory per `MANIFEST.md`.
 
 Create `.claude/skills/task-complete/SKILL.md` in the project's skills directory.
-Create `task_complete.md` as the canonical task-complete behavior source.
 
 The task-complete skill must:
-- reference `task_complete.md` as its behavior source
+- reference `protocols/task_complete.md` as its behavior source
 - not redefine the protocol inline
 - be registered in `AGENTS.md` under the capability registry
 
 Wire it into the manager skill: the manager must append `task-complete` as the final step for all non-trivial pipelines at routing time.
 Do not make individual pipelines declare `task-complete` themselves.
 
+### Required: Manager Skill for Medium and Large Projects
+
+If the project is medium or large, create `.claude/skills/manager/SKILL.md`.
+
+The manager skill must:
+- reference `protocols/manager.md` as its behavior source
+- centralize non-trivial routing
+- append `task-complete` as the final step for every non-trivial pipeline
+- avoid duplicating `AGENTS.md`
+- avoid embedding implementation steps
+
+For small projects, prefer minimal inline routing in `AGENTS.md` unless repository evidence clearly justifies a manager.
+
 ### Composition Steps
 
 1. Decide which instruction artifacts are actually needed
-2. Propose the minimal coherent target structure
-3. Create or refactor the files
-4. Remove or merge duplicated logic
-5. Keep responsibility boundaries explicit
+2. Map applicable protocols to mandatory skills for the chosen project size
+3. Propose the minimal coherent target structure
+4. Create or refactor the files
+5. Create or refresh tool-specific adapter files so every supported AI tool points to `AGENTS.md`
+6. Remove or merge duplicated logic
+7. Keep responsibility boundaries explicit
 
 ### Output by Project Size
 

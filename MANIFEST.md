@@ -1,5 +1,5 @@
 ---
-version: 1.2.0
+version: 1.2.1
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/MANIFEST.md
 ---
@@ -36,12 +36,13 @@ The following files must always share the same frontmatter version value:
 - `01_initial.md`
 - `02_review.md`
 - `03_evolution.md`
-- `brainstorm.md`
-- `task_complete.md`
+- `protocols/brainstorm.md`
+- `protocols/task_complete.md`
+- `protocols/manager.md`
 
 Rules:
-- all six files must have identical `version` values at all times
-- every framework refactor must increment the version in all six files simultaneously
+- all seven files must have identical `version` values at all times
+- every framework refactor must increment the version in all seven files simultaneously
 - semantic versioning is mandatory: `MAJOR.MINOR.PATCH`
 
 Version meaning:
@@ -50,6 +51,21 @@ Version meaning:
 - MAJOR: breaking changes to the framework contract
 
 This repository includes a maintenance skill at `.claude/skills/maintain-version-frontmatter/SKILL.md` to enforce this rule during future refactors.
+
+---
+
+# Cross-Tool Entry Point Rule
+
+`AGENTS.md` is the canonical operational entry point for the project.
+
+If a project uses multiple AI tools:
+- each tool-specific entry file or configuration must point to `AGENTS.md`
+- no tool-specific file may become a second source of truth
+- tool adapters may explain how the tool loads `AGENTS.md`, but must not duplicate project policy
+
+This framework is tool-agnostic.
+Tool-specific compatibility files are allowed.
+Parallel instruction systems are not.
 
 ---
 
@@ -240,6 +256,9 @@ These are descriptions of intent, not enforcement mechanisms.
 - task classification
 - available capabilities
 
+If a project uses multiple AI tools, all tool-specific entry files must defer to `AGENTS.md`.
+They are adapters, not independent roots.
+
 ---
 
 ## Execution Layer (Stored under `.claude/` by default)
@@ -302,6 +321,18 @@ Must NOT:
 
 ---
 
+# Protocol Contract
+
+Every canonical protocol in `protocols/` must declare:
+- project applicability (`small`, `medium`, `large`)
+- `Mandatory` requirements that all implementations must preserve
+- `Adapt` guidance describing what projects may localize without breaking the protocol
+
+Protocols define reusable behavioral contracts.
+Skills implement those contracts by reference.
+
+---
+
 # Mandatory Skills
 
 ## Brainstorm Skill (Required in Every Project)
@@ -320,15 +351,14 @@ Without a canonical brainstorm skill:
 
 ### What it must implement
 
-The brainstorm skill must follow the protocol defined in `brainstorm.md`.
+The brainstorm skill must follow the protocol defined in `protocols/brainstorm.md`.
 It must NOT redefine the protocol inline.
 
 ### Where it lives
 
 `.claude/skills/brainstorm/SKILL.md`
 
-It must reference `brainstorm.md` as its canonical behavior source.
-It must NOT redefine the protocol inline.
+It must reference `protocols/brainstorm.md` as its canonical behavior source.
 
 ### Registration
 
@@ -342,7 +372,7 @@ It must be registered in `AGENTS.md` like any other skill:
 
 Every project built with this framework **must** include a task-complete skill.
 
-This skill is mandatory for every non-trivial task and exempt for trivial tasks.
+This skill is mandatory for every non-trivial task.
 
 ### Why it is mandatory
 
@@ -352,18 +382,16 @@ Without a canonical task-complete skill:
 - skipped or deviated steps can go undocumented
 - users cannot reliably confirm that the planned work actually finished
 
-### Purpose
-
-Mandatory exit gate for every non-trivial task.
-Produces a structured closure report so the user can verify that work was completed correctly and no steps were silently skipped.
+The skill produces a structured closure report so the user can verify that work was completed correctly and no steps were silently skipped.
 
 ### Scope
 
-This skill is mandatory for every non-trivial task and exempt for trivial tasks.
+Non-trivial tasks only.
+Trivial tasks (isolated, low-risk, single-step) are exempt.
 
 ### What it must implement
 
-The task-complete skill must follow the protocol defined in `task_complete.md`.
+The task-complete skill must follow the protocol defined in `protocols/task_complete.md`.
 It must NOT redefine the protocol inline.
 
 ### When NOT to use
@@ -375,8 +403,7 @@ Do not invoke for single-step, low-risk, or purely cosmetic changes.
 
 `.claude/skills/task-complete/SKILL.md`
 
-It must reference `task_complete.md` as its canonical behavior source.
-It must NOT redefine the protocol inline.
+It must reference `protocols/task_complete.md` as its canonical behavior source.
 
 ### Registration
 
@@ -385,6 +412,39 @@ It must be registered in `AGENTS.md` like any other skill:
 - purpose: mandatory closure reporting for non-trivial tasks
 - when to use: final step of any non-trivial pipeline, appended by the manager
 - when not to use: trivial, single-step, low-risk, or purely cosmetic tasks
+
+## Manager Skill (Required for Medium and Large Projects)
+
+Medium and large projects built with this framework **must** include a manager skill.
+
+Small projects should avoid a manager unless direct evidence shows inline routing is no longer sufficient.
+
+### Why it is mandatory
+
+Once a project has multiple repeated workflows, non-trivial routing must be centralized.
+Without a canonical manager skill:
+- non-trivial work is routed inconsistently
+- completion enforcement drifts across workflows
+- orchestration logic leaks into unrelated skills
+
+### What it must implement
+
+The manager skill must follow the protocol defined in `protocols/manager.md`.
+It must NOT redefine the protocol inline.
+
+### Where it lives
+
+`.claude/skills/manager/SKILL.md`
+
+It must reference `protocols/manager.md` as its canonical behavior source.
+
+### Registration
+
+It must be registered in `AGENTS.md` like any other skill:
+- name: manager
+- purpose: centralized routing and completion enforcement for non-trivial work
+- when to use: before any non-trivial task in a medium or large project
+- when not to use: trivial tasks; small projects that still fit minimal inline routing
 
 ---
 

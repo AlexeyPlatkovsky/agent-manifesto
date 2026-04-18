@@ -1,7 +1,7 @@
 ---
-version: 1.2.0
+version: 1.2.1
 project: agent-manifest
-url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/brainstorm.md
+url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/protocols/brainstorm.md
 ---
 
 # brainstorm.md
@@ -12,6 +12,34 @@ This document defines the canonical protocol for all brainstorming and discussio
 
 This is a **reference document**, not a skill.
 Skills reference this document. They do not redefine it.
+
+---
+
+# Project Applicability
+
+Applies to:
+- small projects
+- medium projects
+- large projects
+
+Implementation status:
+- mandatory in every project
+
+---
+
+# Protocol Template
+
+## Mandatory
+
+- Any brainstorm skill must reference this protocol rather than restating it inline.
+- The protocol's core rules are not optional and must remain intact across projects.
+- The skill implementing this protocol must be registered in `AGENTS.md`.
+
+## Adapt
+
+- Projects may add domain-specific examples, prompts, or framing around decisions.
+- Projects may localize terminology to match their repository or team habits.
+- Adaptations must not change the one-question-at-a-time discussion contract.
 
 ---
 

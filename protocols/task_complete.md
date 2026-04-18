@@ -1,7 +1,7 @@
 ---
-version: 1.2.0
+version: 1.2.1
 project: agent-manifest
-url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/task_complete.md
+url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/protocols/task_complete.md
 ---
 
 # task_complete.md
@@ -12,6 +12,35 @@ This document defines the canonical protocol for `task-complete` behavior across
 
 This is a **reference document**, not a skill.
 Skills reference this document. They do not redefine it.
+
+---
+
+# Project Applicability
+
+Applies to:
+- small projects
+- medium projects
+- large projects
+
+Implementation status:
+- mandatory in every project
+- invoked only for non-trivial work
+
+---
+
+# Protocol Template
+
+## Mandatory
+
+- Any task-complete skill must reference this protocol rather than restating it inline.
+- The manager must enforce this protocol centrally for non-trivial pipelines.
+- The skill implementing this protocol must be registered in `AGENTS.md`.
+
+## Adapt
+
+- Projects may add local examples or wording around the closure report.
+- Projects may specialize the row comments for repository-specific caveats.
+- Adaptations must preserve the exact three-column report format and non-trivial scope.
 
 ---
 

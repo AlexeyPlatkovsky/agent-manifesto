@@ -1,5 +1,5 @@
 ---
-version: 1.2.0
+version: 1.2.1
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/03_evolution.md
 ---
@@ -10,8 +10,9 @@ url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/03_evolution.m
 
 Before starting, ensure the following files are available in this session:
 - `MANIFEST.md` — canonical source of truth
-- `brainstorm.md` — canonical brainstorming behavior
-- `task_complete.md` — canonical task completion behavior
+- `protocols/brainstorm.md` — canonical brainstorming behavior
+- `protocols/task_complete.md` — canonical task completion behavior
+- `protocols/manager.md` — canonical manager behavior for medium and large projects
 - Your current instruction system: `AGENTS.md`, all skills, workflows, and agents
 
 If any are missing, stop and ask the user to provide them.
@@ -37,7 +38,7 @@ Work in exactly 3 phases. Do not skip or merge phases.
 2. **Brainstorm** — free-form conversation to surface real workflows
 3. **Proposal** — present a complete set of proposed additions for user approval
 
-During Brainstorm: follow `brainstorm.md` exactly.
+During Brainstorm: follow `protocols/brainstorm.md` exactly.
 During Proposal: present everything at once, do not drip-feed proposals.
 During Composition (after approval): execute without returning to discussion.
 
@@ -84,7 +85,7 @@ Let the user respond freely. Do not impose structure yet.
 
 ### Follow-up Questioning
 
-After the user's initial response, use `brainstorm.md` to ask targeted follow-up questions:
+After the user's initial response, use `protocols/brainstorm.md` to ask targeted follow-up questions:
 - one question at a time
 - focus on areas not yet covered by existing instructions
 - explore: code review habits, deployment routines, testing workflows, onboarding, documentation, debugging patterns, release processes, cross-team communication
@@ -169,7 +170,7 @@ Only begin after explicit user approval of the proposal.
 - Do not introduce duplication
 - Maintain clean responsibility boundaries
 - Update `AGENTS.md` to register all new capabilities
-- Brainstorm skill must remain present and unchanged unless the user explicitly requests modification
+- Retain any existing skill unchanged unless the user explicitly requests modification
 
 ### Output
 
@@ -194,5 +195,6 @@ The evolved system must:
 - stay within correct architectural layers
 - be fully registered in `AGENTS.md`
 - remain comprehensible — complexity must be justified, not assumed
+- retain any existing skill unchanged unless the user explicitly requests modification
 
 If a proposed addition cannot be clearly justified by something the user described → do not add it.

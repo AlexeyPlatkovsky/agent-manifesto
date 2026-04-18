@@ -1,5 +1,5 @@
 ---
-version: 1.2.0
+version: 1.2.1
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/02_review.md
 ---
@@ -10,8 +10,9 @@ url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/02_review.md
 
 Before starting, ensure the following files are available in this session:
 - `MANIFEST.md` — canonical source of truth
-- `brainstorm.md` — canonical brainstorming behavior
-- `task_complete.md` — canonical task completion behavior
+- `protocols/brainstorm.md` — canonical brainstorming behavior
+- `protocols/task_complete.md` — canonical task completion behavior
+- `protocols/manager.md` — canonical manager behavior for medium and large projects
 - Your full instruction system: `AGENTS.md`, all skills, workflows, agents, and reference docs
 
 If any are missing, stop and ask the user to provide them.
@@ -40,7 +41,7 @@ Work in exactly 4 phases. Do not skip or merge phases.
 3. **Final Validation** — verdict and minimal fix plan
 4. **Implementation & Verification** — apply fixes and verify results (only when user requests)
 
-During Clarification: follow `brainstorm.md` exactly.
+During Clarification: follow `protocols/brainstorm.md` exactly.
 Do NOT modify files during Phases 1–3.
 Do NOT suggest implementation until Phase 3.
 
@@ -60,6 +61,7 @@ This check must be performed first.
 - verify that it acts as the root operational contract
 - verify that routing and capability declarations are visible from `AGENTS.md`
 - verify that execution details are delegated to skills, workflows, and agents rather than embedded in the root file
+- verify that any tool-specific entry files defer to `AGENTS.md` rather than duplicating policy
 
 Any failure here must appear in the violations list.
 
@@ -70,6 +72,7 @@ Any failure here must appear in the violations list.
 - Is the root context (AGENTS.md) minimal?
 - Is anything unnecessarily always-loaded?
 - Are skills, workflows, and reference docs on-demand only?
+- Are tool-specific adapters lightweight and non-duplicative?
 
 ---
 
@@ -79,6 +82,7 @@ Any failure here must appear in the violations list.
 - Exception: small projects may contain inline routing logic — is it minimal and scoped correctly?
 - Are procedures confined to skills and workflows?
 - Is any execution logic embedded in AGENTS.md beyond the permitted inline routing?
+- Do tool-specific AI files duplicate policy that should live only in `AGENTS.md`?
 
 ---
 
@@ -162,7 +166,7 @@ If completion gates are optional rather than mandatory → **Major violation**.
 
 - Does a brainstorm skill exist?
 - Is it registered in AGENTS.md?
-- Does it reference `brainstorm.md` without redefining it inline?
+- Does it reference `protocols/brainstorm.md` without redefining it inline?
 - Is it correctly scoped (discussion only, not execution)?
 
 If the brainstorm skill is missing → this is a **Critical violation**.
@@ -171,12 +175,12 @@ If the brainstorm skill is missing → this is a **Critical violation**.
 
 ### 10. Task-Complete Skill (Mandatory for Non-Trivial Tasks)
 
-- [ ] `task_complete.md` exists and is readable
+- [ ] `protocols/task_complete.md` exists and is readable
 - [ ] `.claude/skills/task-complete/SKILL.md` exists in the project's skills directory
-- [ ] The skill references `task_complete.md` without redefining it inline
+- [ ] The skill references `protocols/task_complete.md` without redefining it inline
 - [ ] The skill is registered in `AGENTS.md` with correct scope (non-trivial tasks only)
 - [ ] The manager skill contains an explicit rule appending `task-complete` as the final step for non-trivial pipelines
-- [ ] The report table format in `task_complete.md` is correct: exactly three columns — `Step | Skill / Agent | Comment`
+- [ ] The report table format is correct: exactly three columns — `Step | Skill / Agent | Comment`
 - [ ] No individual pipeline declares `task-complete` as its own step; enforcement is centralized in the manager
 - [ ] The skill correctly exempts trivial tasks
 
@@ -193,6 +197,7 @@ If the manager skill is missing on a medium or large project → this is a **Cri
 
 If the project is **medium or large**:
 - Is there either a dedicated manager skill OR another concrete routing capability named in AGENTS.md?
+- If a manager skill exists, does it reference `protocols/manager.md` without redefining it inline?
 - Is the non-trivial routing target unambiguous?
 - Are non-trivial tasks blocked on routing instead of being executed directly?
 - If a manager skill exists, does it satisfy the large-project checks above except where scale makes extra structure unnecessary?
@@ -229,6 +234,7 @@ If the project is **small**:
 - Are workflows lightweight?
 - Are reference docs used correctly (not always loaded)?
 - Are there any large monolithic files that should be split?
+- Are AI tool adapter files minimal and only responsible for loading `AGENTS.md`?
 
 ---
 
@@ -293,7 +299,7 @@ Ask questions ONLY if:
 - the design intent is ambiguous
 - multiple valid interpretations exist and the choice affects the fix plan
 
-Follow `brainstorm.md` exactly:
+Follow `protocols/brainstorm.md` exactly:
 - one question at a time
 - 2–3 concrete options per question
 - stop and wait after each question
@@ -357,6 +363,7 @@ Confirm or deny each of the following:
 - [ ] Responsibility boundaries are clear and enforced
 - [ ] Context is minimal — nothing unnecessary is always-loaded
 - [ ] Layering is correct — policy in AGENTS.md, execution in skills/workflows
+- [ ] Tool-specific entry files defer to `AGENTS.md` and do not duplicate policy
 - [ ] Complexity matches project scale — no over or under engineering
 - [ ] Routing gates use imperative blocking language — not descriptive guidance
 - [ ] Routing gate appears at the top of AGENTS.md before capability registry
@@ -365,6 +372,7 @@ Confirm or deny each of the following:
 - [ ] Brainstorm skill is present, correctly scoped, and registered
 - [ ] Brainstorm protocol is referenced, not duplicated
 - [ ] Task-complete skill is present, correctly scoped to non-trivial tasks, and registered
+- [ ] Medium and large projects implement a manager skill that references `protocols/manager.md`
 - [ ] Manager appends task-complete as the final step for non-trivial pipelines
 - [ ] No individual pipeline redundantly declares task-complete
 - [ ] Large and medium projects include a manager skill or name an explicit routing capability for non-trivial work
