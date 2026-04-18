@@ -165,3 +165,7 @@ The full philosophy is in `MANIFEST.md`. The short version:
 
 If you improve MANIFEST.md, update it first — then propagate changes to the prompts.
 Never update a prompt to work around a MANIFEST principle. Update MANIFEST first.
+
+## License
+©Alexey Platkovsky. Licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+You may use, share, and adapt this work for any purpose — including commercial — as long as you credit the original author and link to this repository.
