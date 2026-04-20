@@ -1,5 +1,5 @@
 ---
-version: 1.3.0
+version: 1.4.0
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/03_evolution.md
 ---
@@ -24,6 +24,9 @@ Expand a correct baseline instruction system into a more complete one that refle
 
 This prompt is not for building from scratch.
 It assumes `01_initial.md` already produced a valid baseline.
+
+It is not for adopting external tools, libraries, or frameworks.
+If the user's request bundles tool adoption with evolution, split the work: run `03_evolution.md` first, then hand off tool adoption to `04_tool_integration.md`.
 
 ---
 
@@ -113,6 +116,7 @@ Begin only after explicit user approval.
 Rules:
 - follow `MANIFEST.md`
 - keep protocol-derived mandatory capabilities intact
+- if Discovery concluded that project scale changed, materialize every protocol whose `applies_to` now includes the new scale and whose `implementation` is `mandatory` as a standalone project skill before any other addition (for example, a scale bump to `medium` or `large` requires a standalone manager skill derived from `protocols/manager.md`)
 - preserve existing good artifacts unless the user approved changes
 - keep execution skills isolated from orchestration
 - update the applicable root contract and capability registry

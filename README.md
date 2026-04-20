@@ -1,5 +1,5 @@
 ---
-version: 1.3.0
+version: 1.4.0
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/README.md
 ---
@@ -18,6 +18,7 @@ A framework for building and reviewing AI instruction systems that stay minimal,
 - `01_initial.md`: builds or adjusts a baseline instruction system
 - `02_review.md`: audits an instruction system against the framework
 - `03_evolution.md`: expands a correct baseline around real team habits
+- `04_tool_integration.md`: adopts an external tool or framework into an existing instruction system
 
 ---
 
@@ -85,6 +86,16 @@ What it does:
 - learns real recurring work from the user
 - proposes new skills, pipelines, agents, and docs
 - keeps additions grounded in actual usage rather than theory
+- materializes newly-applicable mandatory protocols as standalone skills when project scale changes
+
+### `04_tool_integration.md`
+
+Use this when adopting a specific external tool, library, or framework into an existing instruction system.
+
+What it does:
+- inventories the tool's runtime surface, demos, and foreign instruction artifacts
+- reconciles foreign skills into standalone project skills, wrapped libraries, references, or discards
+- enforces cleanup of demo content and broken imports before completion
 
 ---
 

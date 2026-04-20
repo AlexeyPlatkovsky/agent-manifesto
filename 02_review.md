@@ -1,5 +1,5 @@
 ---
-version: 1.3.0
+version: 1.4.0
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/02_review.md
 ---
@@ -120,7 +120,17 @@ For each required protocol, verify:
 
 Flag as a major violation if a project skill depends on framework protocol files or framework paths at runtime.
 
-### 9. Structure and Refactor Risks
+### 9. Imported Capability Adoption
+
+When the project adopted an external framework, starter kit, or reusable capability bundle, verify:
+- whether demo residue remains, such as sample pages, sample tests, placeholder fixtures, or example docs that are not justified by the host repository
+- whether the imported capability was normalized into the host project's routing model instead of bringing its own competing orchestration
+- whether imported skills, pipelines, agents, or registries conflict with the host root contract or duplicate existing project capabilities
+- whether the adopted code still compiles or typechecks in the host repository after import
+- whether exported files have the required imports and no obvious unresolved references remain
+- which concrete validation commands would prove the adoption is intact, even if those commands cannot be run during the review
+
+### 10. Structure and Refactor Risks
 
 Check for:
 - near-duplicate capabilities
@@ -128,8 +138,9 @@ Check for:
 - mixed AI roots
 - stale unsupported tool entrypoints
 - oversized files that likely violate single responsibility
+- imported orchestration layers that bypass or weaken the project's canonical routing path
 
-### 10. Validation and Completion
+### 11. Validation and Completion
 
 - does every non-trivial pipeline include explicit validation
 - is `task-complete` enforced for non-trivial work
@@ -161,6 +172,7 @@ Prioritize:
 - incorrect root contract model
 - duplicated or blurred responsibilities
 - protocol coverage failures
+- imported-framework adoption failures such as demo residue, broken compilation, or competing orchestration
 
 Then list:
 - open ambiguities that require clarification

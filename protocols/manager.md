@@ -1,5 +1,5 @@
 ---
-version: 1.3.0
+version: 1.4.0
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/protocols/manager.md
 implementation: mandatory

@@ -7,6 +7,7 @@ This repository is versioned as a single unit. The following files must always s
 - `01_initial.md`
 - `02_review.md`
 - `03_evolution.md`
+- `04_tool_integration.md`
 - `protocols/*.md`
 
 ## Rules
