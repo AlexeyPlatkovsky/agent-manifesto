@@ -1,5 +1,5 @@
 ---
-version: 1.5.0
+version: 1.5.1
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/03_evolution.md
 ---
@@ -21,6 +21,8 @@ If required context is missing, stop and ask for it.
 ## Purpose
 
 Expand a correct baseline instruction system into a more complete one that reflects real team habits and recurring work.
+
+When the user already asks for specific new capabilities, keep evolution anchored to that explicit request instead of resetting to broad discovery of team habits.
 
 This prompt is not for building from scratch.
 It assumes `01_initial.md` already produced a valid baseline.
@@ -49,6 +51,8 @@ Read the current instruction system and identify:
 - what skills, pipelines, agents, and docs already exist
 - what recurring work they already cover
 - what important recurring work is still missing
+- whether the user already named concrete additions or target responsibilities
+- which design decisions are still genuinely open versus already decided by the user request
 - whether the current system still matches protocol requirements
 - whether duplication or blurred responsibilities have crept in
 
@@ -59,11 +63,18 @@ Do not propose solutions yet.
 
 ## Phase 2 — Brainstorm
 
-Start with an open invitation:
+Ask only about unresolved high-impact decisions.
 
-> "To evolve this instruction system around how your team actually works, describe a typical day or week. What tasks repeat, what slows you down, and what do you wish the AI handled better?"
+If the user already requested concrete additions, start with a scoped question about that requested capability set.
+Do not reset to a broad "typical day or week" discovery prompt.
 
-Then use `protocols/brainstorm.md` to ask follow-up questions one at a time.
+Use a broad recurring-work question only when the request is intentionally open-ended and the missing capability areas are still unknown.
+
+Every Brainstorm question must follow `protocols/brainstorm.md` exactly:
+- one question at a time
+- 2-3 concrete options
+- explicit trade-offs
+- stop and wait after each question
 
 Explore only areas not already covered well by the existing system, such as:
 - review habits
@@ -72,6 +83,9 @@ Explore only areas not already covered well by the existing system, such as:
 - onboarding
 - docs maintenance
 - recurring cross-team coordination
+- constraints or variants of the explicitly requested capability set
+
+Do not ask for broad workflow narration when Discovery and the user request already provide enough evidence to discuss the requested additions directly.
 
 Stop when:
 - the user has described the meaningful recurring work
