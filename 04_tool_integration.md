@@ -1,5 +1,5 @@
 ---
-version: 1.4.1
+version: 1.5.0
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/04_tool_integration.md
 ---
@@ -89,6 +89,7 @@ Rules:
 - route new capabilities through the existing manager-equivalent when the project has one
 - keep execution skills isolated from orchestration
 - update the applicable root contract and capability registry with the new skills
+- for multi-tool or AI-agnostic projects, emit each translated or generated shared skill as `.ai/skills/<skill_name>/SKILL.md` with Claude-style YAML frontmatter including at least `name` and `description`
 
 For single-tool projects, update the native root entrypoint.
 For multi-tool or AI-agnostic projects, update `AGENTS.md` and any selected adapters.

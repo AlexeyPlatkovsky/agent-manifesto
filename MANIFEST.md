@@ -1,5 +1,5 @@
 ---
-version: 1.4.1
+version: 1.5.0
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/MANIFEST.md
 ---
@@ -171,6 +171,14 @@ For shared storage in this mode, use:
 - `.ai/agents`
 - `.ai/docs`
 
+The framework-standard skill format in this mode is:
+- `.ai/skills/<skill_name>/SKILL.md`
+
+Framework-standard skills must use markdown with Claude-style YAML frontmatter.
+At minimum, the frontmatter must include:
+- `name`
+- `description`
+
 If a project already stores capabilities elsewhere, migration is a structural refactor and requires user approval.
 
 ---
@@ -243,6 +251,10 @@ Generated project skills must:
 - include minimal project-specific adaptation
 - avoid references to framework files, protocol files, or framework-only paths
 
+For multi-tool or AI-agnostic projects, generated project skills must use the framework-standard skill format:
+- `.ai/skills/<skill_name>/SKILL.md`
+- markdown body with Claude-style YAML frontmatter including at least `name` and `description`
+
 ---
 
 # Canonical Layers
@@ -256,6 +268,8 @@ Rules:
 - no orchestration logic
 - no cross-skill routing
 - no duplicated root policy
+
+For multi-tool or AI-agnostic projects, each skill lives in its own directory as `SKILL.md` using the framework-standard frontmatter.
 
 ## Pipelines
 

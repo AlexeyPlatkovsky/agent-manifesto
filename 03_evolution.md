@@ -1,5 +1,5 @@
 ---
-version: 1.4.1
+version: 1.5.0
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/03_evolution.md
 ---
@@ -123,6 +123,7 @@ Rules:
 
 For single-tool projects, update the native root entrypoint.
 For multi-tool or AI-agnostic projects, update `AGENTS.md` and any selected adapters.
+Any new shared skill must use the framework-standard format `.ai/skills/<skill_name>/SKILL.md` with Claude-style YAML frontmatter including at least `name` and `description`.
 
 ---
 

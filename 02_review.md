@@ -1,5 +1,5 @@
 ---
-version: 1.4.1
+version: 1.5.0
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/02_review.md
 ---
@@ -51,10 +51,13 @@ Determine which root contract model applies.
 For single-tool projects:
 - verify that the tool's official native entrypoint exists and acts as the full operational contract
 - verify the native entrypoint against the tool's current official docs when needed
+- verify that supporting artifacts follow the selected tool's native structure
 
 For multi-tool or AI-agnostic projects:
 - verify that `AGENTS.md` exists and acts as the root operational contract
 - verify that supported tool-specific entry files are thin adapters to `AGENTS.md`
+- verify that shared skills use the framework-standard format `.ai/skills/<skill_name>/SKILL.md`
+- verify that each shared skill uses Claude-style YAML frontmatter with at least `name` and `description`
 
 In both cases:
 - verify that routing and capability declarations are visible from the root contract

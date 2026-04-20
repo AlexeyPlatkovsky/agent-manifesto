@@ -1,5 +1,5 @@
 ---
-version: 1.4.1
+version: 1.5.0
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/01_initial.md
 ---
@@ -210,6 +210,8 @@ For multi-tool or AI-agnostic projects:
 - create or update `AGENTS.md`
 - create or update thin tool-specific adapters that say to follow `AGENTS.md` strictly
 - store shared capabilities under `.ai/skills`, `.ai/pipelines`, `.ai/agents`, and `.ai/docs` unless the user explicitly chose another location
+- create each shared skill as `.ai/skills/<skill_name>/SKILL.md`
+- use Claude-style YAML frontmatter in each shared skill with at least `name` and `description`
 
 For single-tool projects:
 - place the full contract directly in the official native entrypoint

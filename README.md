@@ -1,5 +1,5 @@
 ---
-version: 1.4.1
+version: 1.5.0
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/README.md
 ---
@@ -39,6 +39,12 @@ For multi-tool shared storage, the default layout is:
 
 Project skills are standalone project artifacts.
 They are derived from framework protocols during composition, but they must not reference framework protocol files at runtime.
+
+In multi-tool or AI-agnostic projects, the framework-standard skill format is:
+- `.ai/skills/<skill_name>/SKILL.md`
+- Claude-style YAML frontmatter with at least `name` and `description`
+
+Single-tool projects should still use the selected tool's native supporting-artifact structure.
 
 ---
 
