@@ -312,9 +312,7 @@ Rules:
 - every non-trivial pipeline must include at least one explicit validation step
 - stronger review loops apply only for higher-risk work
 - validation should be automated and repeatable where possible
-
-`task-complete` is the required closure skill for non-trivial work.
-Its enforcement should be centralized in the routing layer, not repeated across execution skills.
+- `task-complete` is the required closure skill for non-trivial work. Its enforcement should be centralized in the routing layer, not repeated across execution skills.
 
 ---
 
