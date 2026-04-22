@@ -1,4 +1,4 @@
-name: Release on major/minor version bump
+name: Release on version bump
 
 on:
   push:
@@ -6,6 +6,11 @@ on:
       - main
     paths:
       - MANIFEST.md
+      - 01_initial.md
+      - 02_review.md
+      - 03_evolution.md
+      - 04_tool_integration.md
+      - protocols/*.md
 
 permissions:
   contents: write
@@ -44,6 +49,7 @@ jobs:
         id: decide
         shell: bash
         run: |
+          set -euo pipefail
           current="${{ steps.versions.outputs.current_version }}"
           previous="${{ steps.versions.outputs.previous_version }}"
 
@@ -59,14 +65,8 @@ jobs:
             exit 0
           fi
 
-          IFS='.' read -r cur_major cur_minor cur_patch <<< "$current"
-          IFS='.' read -r prev_major prev_minor prev_patch <<< "$previous"
-
           release=false
-
-          if [ "$cur_major" -gt "$prev_major" ]; then
-            release=true
-          elif [ "$cur_major" -eq "$prev_major" ] && [ "$cur_minor" -gt "$prev_minor" ]; then
+          if [ "$current" != "$previous" ] && [ "$(printf '%s\n%s\n' "$previous" "$current" | sort -V | tail -n1)" = "$current" ]; then
             release=true
           fi
 
