@@ -6,30 +6,124 @@ url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/README.md
 
 # AI Instruction Framework
 
-The Agent Manifesto is a portable framework designed to organize and streamline AI instruction systems, preventing the "messy" complexity that often arises in growing projects. It operates through a three-stage process: **initial builds** to establish a solid foundation, **system audits** for validation and compliance, and **evolutionary updates** that adapt to a team’s specific habits. T
+The Agent Manifesto is a portable, tool-agnostic framework for organizing AI instruction systems. It prevents the "messy" complexity that grows in AI-assisted projects by centralizing core rules, separating execution from orchestration, and keeping instruction files minimal and logical. It supports both single-tool and multi-tool environments, and scales from small prototypes to large codebases.
 
-The framework emphasizes minimalism and logic, recommending that instruction files remain around 150 lines to ensure clarity and performance. It is supporting both single-tool and multi-tool environments. By centralizing core rules and separating execution from orchestration, the manifesto ensures that AI agents remain consistent and manageable over time. Ultimately, this resource provides a structured blueprint for developers to build sustainable, future-proof AI workflows.
+---
+
+## How To Use
+
+The framework is delivered as a set of prompt files. Each prompt is self-contained — attach or reference it in your AI tool and ask the tool to run it. The exact syntax depends on your tool (`@file` in Claude Code, Cursor, and most modern agents), but the idea is the same across all of them:
+
+> `run @<prompt-file>.md`
+
+You do not run all prompts in sequence. Pick the one that matches your current situation.
+
+---
+
+### Step 0 — Pick Your Mode
+
+Before running anything, decide which root-contract mode fits your project:
+
+- **Single-tool** — one AI tool is used (e.g., only Claude Code). The tool's native entrypoint holds the full project contract.
+- **Multi-tool or AI-agnostic** — multiple AI tools, or you want portability. `AGENTS.md` is the canonical root contract, and tool-specific files are thin adapters.
+
+The prompts will ask you to confirm this, so you do not need to configure anything up front — just know which one you want.
+
+---
+
+### Step 1 — Build The Baseline
+
+**When:** starting from scratch, or refactoring an existing messy instruction system.
+
+**Run:**
+```
+run @01_initial.md
+```
+
+**What happens:**
+- The AI inventories your repository.
+- It asks you structured questions about project size, tools, and unresolved design choices.
+- It derives required capabilities from protocol metadata.
+- It preserves good existing capability names where they already satisfy the framework.
+- It asks before any risky change (splits, moves, merges, deletions, contract choices).
+
+**Outcome:** the smallest coherent instruction system that fully aligns with `MANIFEST.md`.
+
+---
+
+### Step 2 — Audit For Compliance
+
+**When:** after significant instruction changes, or when you want a compliance check on an existing system.
+
+**Run:**
+```
+run @02_review.md
+```
+
+**What happens:**
+- Validates the correct root-contract model.
+- Checks routing gates, duplication, and responsibility boundaries.
+- Verifies protocol coverage from structured metadata.
+- Produces a minimal fix plan before any implementation.
+
+**Outcome:** a validated instruction system and a short, targeted list of fixes if anything is off.
+
+---
+
+### Step 3 — Evolve Around Real Habits
+
+**When:** a valid baseline already exists and the team has real recurring workflows to encode.
+
+**Run:**
+```
+run @03_evolution.md
+```
+
+**What happens:**
+- Learns recurring work directly from you.
+- Proposes new skills, pipelines, agents, and docs grounded in actual usage.
+- Materializes newly-applicable mandatory protocols as standalone skills when project scale changes.
+
+**Outcome:** an instruction system that reflects how your team actually works, without speculative abstractions.
+
+---
+
+### Step 4 — Integrate External Tools
+
+**When:** adopting a specific external tool, library, or framework into an existing instruction system.
+
+**Run:**
+```
+run @04_tool_integration.md
+```
+
+**What happens:**
+- Inventories the tool's runtime surface, demos, and foreign instruction artifacts.
+- Reconciles foreign skills into standalone project skills, wrapped libraries, references, or discards.
+- Enforces cleanup of demo content and broken imports before completion.
+
+**Outcome:** the external tool is cleanly integrated, with no leftover demo noise or conflicting instructions.
 
 ---
 
 ## What This Repository Contains
 
-- `MANIFEST.md`: the canonical framework contract
-- `protocols/_README.md`: protocol index and usage notes
-- `protocols/*.md`: canonical protocol definitions used by the prompts
-- `01_initial.md`: builds or adjusts a baseline instruction system
-- `02_review.md`: audits an instruction system against the framework
-- `03_evolution.md`: expands a correct baseline around real team habits
-- `04_tool_integration.md`: adopts an external tool or framework into an existing instruction system
+- `MANIFEST.md` — the canonical framework contract
+- `protocols/_README.md` — protocol index and usage notes
+- `protocols/*.md` — canonical protocol definitions used by the prompts
+- `01_initial.md` — builds or adjusts a baseline instruction system
+- `02_review.md` — audits an instruction system against the framework
+- `03_evolution.md` — expands a correct baseline around real team habits
+- `04_tool_integration.md` — adopts an external tool or framework into an existing instruction system
 
 ---
 
 ## Core Model
 
-This framework now supports two root-contract modes:
+This framework supports two root-contract modes:
 
-- Single-tool projects: the selected AI tool's official native entrypoint may hold the full project contract.
-- Multi-tool or AI-agnostic projects: `AGENTS.md` is the canonical root contract, and tool-specific files are thin adapters.
+- **Single-tool projects:** the selected AI tool's official native entrypoint may hold the full project contract.
+- **Multi-tool or AI-agnostic projects:** `AGENTS.md` is the canonical root contract, and tool-specific files are thin adapters.
 
 For multi-tool shared storage, the default layout is:
 - `.ai/skills`
@@ -37,8 +131,7 @@ For multi-tool shared storage, the default layout is:
 - `.ai/agents`
 - `.ai/docs`
 
-Project skills are standalone project artifacts.
-They are derived from framework protocols during composition, but they must not reference framework protocol files at runtime.
+Project skills are standalone project artifacts. They are derived from framework protocols during composition, but they must not reference framework protocol files at runtime.
 
 In multi-tool or AI-agnostic projects, the framework-standard skill format is:
 - `.ai/skills/<skill_name>/SKILL.md`
@@ -63,54 +156,9 @@ In the bundled protocol set:
 
 ---
 
-## How To Use The Prompts
-
-### `01_initial.md`
-
-Use this when starting from scratch or when refactoring an existing instruction system.
-
-What it does:
-- inventories the repository
-- runs a structured discussion for unresolved design choices
-- derives required capabilities from protocol metadata
-- preserves good existing capability names when they already satisfy the framework
-- asks before risky changes such as splits, moves, merges, deletions, or contract choices
-
-### `02_review.md`
-
-Use this after significant instruction changes or when you want a compliance audit.
-
-What it does:
-- validates the correct root-contract model
-- checks routing gates, duplication, and responsibility boundaries
-- verifies protocol coverage from structured metadata
-- produces a minimal fix plan before any implementation
-
-### `03_evolution.md`
-
-Use this only after a valid baseline exists.
-
-What it does:
-- learns real recurring work from the user
-- proposes new skills, pipelines, agents, and docs
-- keeps additions grounded in actual usage rather than theory
-- materializes newly-applicable mandatory protocols as standalone skills when project scale changes
-
-### `04_tool_integration.md`
-
-Use this when adopting a specific external tool, library, or framework into an existing instruction system.
-
-What it does:
-- inventories the tool's runtime surface, demos, and foreign instruction artifacts
-- reconciles foreign skills into standalone project skills, wrapped libraries, references, or discards
-- enforces cleanup of demo content and broken imports before completion
-
----
-
 ## Typical Outcomes
 
 ### Small Project
-
 - minimal root contract
 - mandatory protocol-derived skills
 - no reference docs by default
@@ -118,14 +166,12 @@ What it does:
 - no agents by default
 
 ### Medium Project
-
 - manager-equivalent routing capability
 - at least one pipeline
 - reference docs: `architecture.md`, `conventions.md`, `commands.md`
 - explicit validation on every non-trivial pipeline
 
 ### Large Project
-
 - manager-equivalent routing capability
 - multiple pipelines as needed
 - reference docs: `architecture.md`, `conventions.md`, `commands.md`
