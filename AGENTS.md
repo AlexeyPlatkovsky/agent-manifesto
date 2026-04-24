@@ -32,3 +32,13 @@ Before declaring the task complete:
 2. Confirm the `version` values are identical.
 3. Confirm the bump level matches the kind of change made.
 4. If any file was missed, fix it before reporting completion.
+
+## Commit Messages
+
+Commit messages must describe the project-level change (what was changed, added, patched, fixed, restructured, removed).
+
+Do not frame commits around the version bump itself:
+- avoid titles like `Bump version to X`, `Version sync`, `Patch bump for Y`
+- prefer titles that describe the substantive change (`Rework README as how-to guide`, `Add README to versioned file set`)
+
+The version change is visible in the diff and the release tag — the commit message should explain the change that justified the bump, not restate the bump.
