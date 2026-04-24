@@ -1,5 +1,5 @@
 ---
-version: 1.5.3
+version: 1.5.4
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/protocols/brainstorm.md
 implementation: mandatory

@@ -4,6 +4,7 @@ Use this skill whenever a task changes the `agent-manifest` framework itself.
 
 This repository is versioned as a single unit. The following files must always share the same `version` value in YAML frontmatter:
 - `MANIFEST.md`
+- `README.md`
 - `01_initial.md`
 - `02_review.md`
 - `03_evolution.md`
