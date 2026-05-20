@@ -15,7 +15,7 @@ on:
       - 04_tool_adoption.md
       - conventions/*.md
       - protocols/*.md
-      - agents/*.md
+      - agents/**
 
 permissions:
   contents: write

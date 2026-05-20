@@ -1,5 +1,5 @@
 ---
-version: 2.7.2
+version: 2.8.0
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/agents/_README.md
 ---
@@ -26,3 +26,7 @@ Scenario-based acceptance test agent for new or materially changed instruction a
 ### `instruction-evaluator.md`
 
 Read-only review agent for instruction artifacts before they are accepted into a project instruction system.
+
+### `test-system-kit/`
+
+A project- and tech-agnostic bundle for building a standing drift-test system for a project's AI capabilities. Contains the `test-system-builder` skill, the `test-system-auditor` agent, the scenario card schema convention, and the runner-agent template. See `test-system-kit/README.md`.
