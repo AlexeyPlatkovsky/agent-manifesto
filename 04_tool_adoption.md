@@ -1,5 +1,5 @@
 ---
-version: 2.8.0
+version: 2.9.0
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/04_tool_adoption.md
 ---
@@ -75,7 +75,7 @@ Do not propose solutions yet.
 Decide how every foreign artifact maps into the project.
 
 For each foreign skill, pipeline, or agent the tool ships, choose exactly one disposition:
-- translate: create a standalone project capability in the correct layer with the tool's mandatory behavior plus minimal project-specific adaptation, then discard the foreign artifact
+- translate: create a standalone project capability in the correct layer with the tool's mandatory behavior plus minimal project-specific adaptation, then discard the foreign artifact. For an execution capability, place it as a skill or an agent per `conventions/skill-vs-agent.md` based on how it must run in this project, not on how the tool shipped it
 - reference: link it as external documentation when the behavior is not needed as a first-class capability
 - discard: remove entirely when the project has no real use for it
 

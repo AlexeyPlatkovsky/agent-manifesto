@@ -1,5 +1,5 @@
 ---
-version: 2.8.0
+version: 2.9.0
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/02_review.md
 ---
@@ -89,6 +89,7 @@ Audit-specific red flags:
 - the same behavioral requirement has multiple owners
 - routing gates are descriptive instead of blocking
 - risky changes are proposed without naming required user approval
+- an execution capability is misclassified against `conventions/skill-vs-agent.md`: an agent does work that needs multi-turn user interaction, or a skill does work that needs an isolated context or an independent unbiased pass
 
 ### Protocol Inventory and Applicability
 
@@ -212,6 +213,7 @@ Prioritize:
 - missing or unenforceable output artifacts for non-trivial routed work
 - incorrect root contract model
 - duplicated or blurred responsibilities
+- skill/agent misclassification against `conventions/skill-vs-agent.md`
 - layer purity failures
 - protocol coverage failures
 - agent template coverage failures

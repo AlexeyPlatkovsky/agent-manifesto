@@ -1,5 +1,5 @@
 ---
-version: 2.8.0
+version: 2.9.0
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/03_capability_expansion.md
 ---
@@ -133,7 +133,7 @@ For each proposed addition, provide:
 - purpose
 - what user-described need justifies it
 - what existing artifacts it depends on
-- why it belongs in that layer
+- why it belongs in that layer, and for an execution capability why it is a skill or an agent per `conventions/skill-vs-agent.md`
 
 Include mandatory protocol-derived capabilities, mandatory copied agents, and compliance fixes in the proposed delta before asking for approval.
 

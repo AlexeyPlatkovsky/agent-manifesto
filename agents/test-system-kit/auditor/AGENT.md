@@ -1,5 +1,5 @@
 ---
-version: 2.8.0
+version: 2.9.0
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/agents/test-system-kit/auditor/AGENT.md
 name: test-system-auditor

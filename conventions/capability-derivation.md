@@ -1,5 +1,5 @@
 ---
-version: 2.8.0
+version: 2.9.0
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/conventions/capability-derivation.md
 ---
@@ -28,6 +28,8 @@ Generated project capabilities derived from protocols must:
 - avoid references to framework files, protocol files, or framework-only paths
 
 When a protocol derives a skill in a multi-tool or AI-agnostic project, use the framework-standard skill format. When a protocol derives a manager-equivalent routing capability, keep it as a standalone routing artifact, not a skill.
+
+A derived execution capability must be placed as a skill or an agent per `conventions/skill-vs-agent.md`. Decide from context locality, not from the protocol or template filename; the filename does not determine whether the capability runs in the working context or in isolation.
 
 ## Agent Template Derivation
 

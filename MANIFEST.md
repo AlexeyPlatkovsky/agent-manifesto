@@ -1,5 +1,5 @@
 ---
-version: 2.8.0
+version: 2.9.0
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/MANIFEST.md
 ---
@@ -73,15 +73,19 @@ The smallest structure that solves the real current problem wins. Layers, abstra
 
 Every artifact should have one clear responsibility it can be judged against. Decision artifacts decide. Execution artifacts execute. Reference artifacts inform.
 
+Execution artifacts are not interchangeable. Some run inside the working context and may interact directly as work proceeds; others act as isolated actors with a fixed input and output. Where an artifact runs is part of its responsibility, not an incidental detail.
+
 **Prefer:**
 - Artifacts describable in one sentence
 - Names that reveal responsibility
 - Explicit handoffs between decision and execution
+- Choosing where work runs deliberately, not by habit
 
 **Avoid:**
 - Mixed policy, procedure, and reference content
 - Work units that decide their own routing
 - Broad catch-all files
+- Treating an in-context helper and an isolated actor as the same kind of thing
 
 ---
 
