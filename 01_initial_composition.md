@@ -1,5 +1,5 @@
 ---
-version: 2.9.0
+version: 2.10.0
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/01_initial_composition.md
 ---

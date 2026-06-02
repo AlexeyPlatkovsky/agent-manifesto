@@ -1,5 +1,5 @@
 ---
-version: 2.9.0
+version: 2.10.0
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/agents/artifact-acceptance-tester.md
 name: artifact-acceptance-tester
@@ -35,6 +35,7 @@ It complements, but does not replace, `instruction-evaluator`:
 
 Before testing, read:
 - the changed target artifacts
+- the diff or an explicit description of what changed in each target artifact, used to apply the material-change gate and the wording-only exemption below
 - directly related root contract or manager-equivalent routing that invokes them
 - directly related pipelines, skills, agents, conventions, and docs needed to understand expected behavior
 - applicable output contracts and validation gates
@@ -42,6 +43,8 @@ Before testing, read:
 Do not load unrelated project files.
 
 If required context cannot be read, stop and report the missing context. Do not invent expected behavior from memory.
+
+If the diff or an explicit change description is not available, stop and report it as missing context, and return verdict `Blocked`. Do not infer what changed from memory or from the current file alone.
 
 ## Testing Scope
 
@@ -73,6 +76,8 @@ Skip-or-block-path tests verify that the artifact skips, blocks, asks, or report
 
 Misuse-path tests verify that the artifact rejects near-match work that belongs to another artifact or layer.
 
+For spec-only targets that do not execute on their own (output contracts and validation gates), run the 9 scenarios against the consuming artifact that enforces the spec: happy-path verifies the consumer accepts a conforming artifact, skip-or-block-path verifies it blocks a missing or malformed one, and misuse-path verifies it rejects input governed by a different contract or layer. If no consuming artifact exists yet, return verdict `Blocked` and report the missing enforcer.
+
 Each test must define:
 - test id
 - scenario type
@@ -81,7 +86,7 @@ Each test must define:
 - observed behavior from applying the artifact instructions
 - result: Pass, Fail, or Blocked
 
-Use compact scenarios. Do not create broad end-to-end simulations when a narrower probe can test the same behavior.
+Use the smallest probe that exercises the changed behavior. Do not create broad end-to-end simulations when a narrower probe can test the same behavior. If a target has no distinct third scenario for a category, record that slot as `N/A — no distinct scenario` with a one-line reason rather than inventing a contrived test; an `N/A` slot does not count as a failed or blocked test.
 
 ## Evaluation Rules
 
@@ -100,9 +105,14 @@ Do not give credit for behavior that depends only on general model judgment. The
 
 ## Acceptance Rule
 
-An artifact passes acceptance only when all 9 tests pass.
+An artifact passes acceptance only when every test resolves to `Pass` (an `N/A — no distinct scenario` slot counts as resolved, not as a failure).
 
 If any test fails or is blocked, the artifact is not accepted. Report the smallest concrete correction needed before retesting.
+
+Verdict selection:
+- `Accept` when every test is `Pass` (or `N/A`) and none are `Fail` or `Blocked`.
+- `Needs revision` when at least one test is `Fail` and no test is `Blocked`.
+- `Blocked` when at least one test is `Blocked`, or required context or the change diff is missing. `Blocked` takes precedence over `Needs revision`.
 
 ## Output Contract
 
