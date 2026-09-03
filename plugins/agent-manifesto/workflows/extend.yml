@@ -31,7 +31,8 @@ steps:
     needs: [clarify]
     goal: >-
       Present the minimal file-level change, its trigger, ownership, native discovery path, dependencies, validation,
-      and any replacement or migration it requires. Include the documentation files the change will touch.
+      and any replacement or migration it requires. Include documentation paths, snapshot pre-existing changes, and
+      lock the described effects and content hash of every authority-expanding operation.
     output_contract: change-proposal
     on_failure: stop
 
@@ -48,11 +49,21 @@ steps:
     input_contract: change-proposal
     on_failure: stop
 
-  - id: validate
+  - id: document
     needs: [implement]
     goal: >-
+      Align authoritative documentation with the implemented change, editing only documentation paths named in the
+      proposal.
+    skills: [documentation-maintenance]
+    input_contract: change-proposal
+    on_failure: stop
+
+  - id: validate
+    needs: [document]
+    goal: >-
       Validate syntax, references, schemas, native discovery, and relevant project behavior. Confirm the diff touches
-      only paths named in the approved proposal, and report unavailable checks.
+      only paths named in the approved proposal, approved hashes match, and pre-existing changes did not drift. Report
+      unavailable checks.
     input_contract: change-proposal
     on_failure: stop
 
@@ -67,8 +78,5 @@ steps:
   - id: finish
     needs: [evaluate]
     goal: >-
-      Align the project's authoritative documentation with the change, editing only the documentation paths the
-      proposal named, then summarize changes, evidence, remaining risks, and optional future work.
-    skills: [documentation-maintenance]
-    input_contract: change-proposal
+      Summarize changes, evidence, remaining risks, and optional future work without changing files.
     on_failure: stop

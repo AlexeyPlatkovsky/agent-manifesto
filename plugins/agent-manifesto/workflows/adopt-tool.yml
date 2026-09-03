@@ -21,7 +21,9 @@ steps:
     needs: [inspect-host, inspect-tool]
     goal: >-
       Classify each tool artifact as runtime dependency, native adapter, reusable policy, procedure, responsibility,
-      contract, reference context, demo, or discard. Identify conflicts and migration risks without modifying files.
+      contract, reference context, demo, or discard. For every adapter, identify the source trigger, required inputs,
+      authority, tools, dependencies, stopping conditions, exact machine-consumed vocabulary, and output semantics that
+      must survive. Identify conflicts and migration risks without modifying files.
     on_failure: stop
 
   - id: clarify
@@ -35,7 +37,8 @@ steps:
     needs: [clarify]
     goal: >-
       Present the smallest integration plan, including exact retained and removed assets, native configuration,
-      dependencies, validation, documentation files to be touched, and rollback considerations.
+      dependencies, validation, documentation paths, and rollback considerations. Snapshot pre-existing changes, and
+      lock the described effects and content hash of every authority-expanding operation.
     output_contract: change-proposal
     on_failure: stop
 
@@ -52,12 +55,21 @@ steps:
     input_contract: change-proposal
     on_failure: stop
 
-  - id: validate
+  - id: document
     needs: [integrate]
     goal: >-
+      Align authoritative documentation with the adopted surface, editing only documentation paths named in the
+      proposal.
+    skills: [documentation-maintenance]
+    input_contract: change-proposal
+    on_failure: stop
+
+  - id: validate
+    needs: [document]
+    goal: >-
       Run the host project's relevant checks, validate landscape artifacts and references, confirm demos and foreign
-      orchestration were handled as approved, confirm the diff touches only paths named in the approved proposal, and
-      report unavailable verification.
+      orchestration were handled as approved, compare every adapter with its source semantics, confirm approved hashes
+      and working-tree scope, and report unavailable verification.
     input_contract: change-proposal
     on_failure: stop
 
@@ -72,8 +84,5 @@ steps:
   - id: finish
     needs: [evaluate]
     goal: >-
-      Align the project's authoritative documentation with the adopted surface, editing only the documentation paths
-      the proposal named, then summarize that surface, the evidence, the exclusions, and the residual risks.
-    skills: [documentation-maintenance]
-    input_contract: change-proposal
+      Summarize the adopted surface, evidence, exclusions, and residual risks without changing files.
     on_failure: stop

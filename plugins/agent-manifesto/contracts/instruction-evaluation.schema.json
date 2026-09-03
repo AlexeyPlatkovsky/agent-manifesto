@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/contracts/instruction-evaluation.schema.json",
+  "$id": "https://github.com/AlexeyPlatkovsky/agent-manifesto/blob/main/plugins/agent-manifesto/contracts/instruction-evaluation.schema.json",
   "title": "Instruction evaluation",
   "description": "Structured result returned by the instruction-evaluator agent.",
   "x-framework-version": "3.0.0",
@@ -42,6 +42,68 @@
       }
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"verdict": {"const": "accept"}},
+        "required": ["verdict"]
+      },
+      "then": {
+        "properties": {"findings": {"maxItems": 0}}
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "findings": {
+            "contains": {
+              "properties": {"severity": {"enum": ["blocking", "major"]}},
+              "required": ["severity"]
+            }
+          }
+        },
+        "required": ["findings"]
+      },
+      "then": {
+        "properties": {"verdict": {"const": "revise"}}
+      }
+    },
+    {
+      "if": {
+        "properties": {"verdict": {"const": "revise"}},
+        "required": ["verdict"]
+      },
+      "then": {
+        "properties": {
+          "findings": {
+            "contains": {
+              "properties": {"severity": {"enum": ["blocking", "major"]}},
+              "required": ["severity"]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"verdict": {"const": "accept-with-notes"}},
+        "required": ["verdict"]
+      },
+      "then": {
+        "properties": {
+          "findings": {
+            "minItems": 1,
+            "not": {
+              "contains": {
+                "properties": {"severity": {"enum": ["blocking", "major"]}},
+                "required": ["severity"]
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
   "$defs": {
     "finding": {
       "type": "object",

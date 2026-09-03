@@ -10,7 +10,12 @@
         "source": "local",
         "path": "./plugins/agent-manifesto"
       },
-      "description": "Define the system your AI works in: context, policies, procedures, responsibilities, contracts, and enforcement — instead of teaching the model how to think."
+      "description": "Define the system your AI works in: context, policies, procedures, responsibilities, contracts, and enforcement — instead of teaching the model how to think.",
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
     }
   ]
 }

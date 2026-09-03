@@ -1,7 +1,7 @@
 ---
 version: 3.0.0
 project: agent-manifest
-url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/README.md
+url: https://github.com/AlexeyPlatkovsky/agent-manifesto/blob/main/README.md
 ---
 
 # Agent Manifesto
@@ -36,14 +36,14 @@ flowchart LR
 **Claude Code**
 
 ```text
-/plugin marketplace add AlexeyPlatkovsky/agent-manifest
+/plugin marketplace add AlexeyPlatkovsky/agent-manifesto
 /plugin install agent-manifesto@agent-manifesto
 ```
 
 **Codex**
 
 ```text
-codex plugin marketplace add AlexeyPlatkovsky/agent-manifest
+codex plugin marketplace add AlexeyPlatkovsky/agent-manifesto
 codex plugin add agent-manifesto@agent-manifesto
 ```
 
@@ -78,14 +78,14 @@ policies, and boundaries before deletion.
 
 Claude Code exposes three skills and one custom agent; Codex exposes the three skills and, when possible, uses a fresh
 session for independent evaluation. Full instructions load on invoke. For plugin version 3.0.0, Claude Code reports
-about 175 tokens of discovery metadata per session:
+about 132 tokens of discovery metadata per session:
 
 | Component | Purpose | Always on | On invoke |
 | --- | --- | ---: | ---: |
-| `agent-manifesto` | Routes requests to workflows | ~50 | ~1.2k |
-| `brainstorm` | Resolves decisions with meaningful alternatives | ~40 | ~320 |
-| `documentation-maintenance` | Aligns docs with completed changes | ~50 | ~350 |
-| `instruction-evaluator` (Claude only) | Reviews landscapes read-only against a schema | ~40 | ~830 |
+| `agent-manifesto` | Routes requests to workflows | ~40 | ~890 |
+| `brainstorm` | Resolves decisions with meaningful alternatives | ~30 | ~240 |
+| `documentation-maintenance` | Aligns docs with completed changes | ~30 | ~260 |
+| `instruction-evaluator` (Claude only) | Reviews landscapes read-only against a schema | ~30 | ~680 |
 
 The plugin adds no hooks, MCP servers, or LSP servers. Codex reports when independent evaluation is unavailable.
 
@@ -153,6 +153,7 @@ plugins/agent-manifesto/
 ├── agents/*.md                     fresh-context responsibility templates
 ├── contracts/*.schema.json         workflow, proposal, and result shapes
 ├── scripts/validate.py             deterministic check, for this repo or any landscape
+├── tests/                           validator regression tests
 └── evals/                          behavioral cases that test whether the framework earns its place
 ```
 
@@ -164,14 +165,16 @@ framework source nor copied into generated landscapes.
 ```text
 python3 plugins/agent-manifesto/scripts/validate.py                 # the framework itself
 python3 plugins/agent-manifesto/scripts/validate.py path/to/repo    # a generated landscape
-python3 plugins/agent-manifesto/scripts/validate.py --proposal approved-change.json
+python3 .claude/scripts/validate.py . --snapshot                    # before changing a dirty landscape
+python3 .claude/scripts/validate.py . --proposal approved-change.json
 ```
 
 Using only the standard library, the validator checks workflow shape, skill and agent frontmatter, cross-layer
 references, and dependency cycles. Setup installs it into generated landscapes, keeping the check with the harness.
 
-With `--proposal`, it also reports files changed outside the approved proposal and private paths staged for commit,
-turning approval into a check rather than a promise.
+`--snapshot` fingerprints pre-existing changes so they are not mistaken for the agent's work. With `--proposal`, the
+validator reports out-of-scope changes, drifted baseline files, mismatched authority-sensitive content hashes, and
+private paths staged for commit—turning approval into a check rather than a promise.
 
 ### Evaluating the framework itself
 
@@ -181,7 +184,8 @@ python3 plugins/agent-manifesto/evals/run.py --list
 
 Three fixtures cover a notes repository that should receive almost no landscape, an over-built 2.x landscape that
 should be trimmed without losing facts, and a healthy landscape that should remain unchanged. See
-[evals/README.md](plugins/agent-manifesto/evals/README.md) for the comparison method.
+[evals/README.md](plugins/agent-manifesto/evals/README.md) for the comparison method and required evidence-backed
+behavioral judgments. Missing judgments cannot produce a passing case.
 
 ### Testing a local checkout
 

@@ -4,9 +4,10 @@
 Uses only the Python standard library so it can run inside any generated
 landscape without installing project dependencies.
 
-    python3 scripts/validate.py            # validate the landscape at the repo root
+    python3 scripts/validate.py            # validate the containing landscape
     python3 scripts/validate.py path/to/repo
     python3 scripts/validate.py --quiet    # report failures only
+    python3 scripts/validate.py --snapshot # capture pre-implementation dirty state
 
 Framework mode adds a version-synchronisation check and is selected
 automatically when the target carries this framework's own MANIFEST.md.
@@ -15,11 +16,12 @@ automatically when the target carries this framework's own MANIFEST.md.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import subprocess
 import sys
-from pathlib import Path
+from pathlib import Path, PurePosixPath, PureWindowsPath
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 BUNDLED_WORKFLOW_SCHEMA = SCRIPT_DIR.parent / "contracts" / "workflow.schema.json"
@@ -211,6 +213,8 @@ def _parse_block(lines, index, indent):
         if not isinstance(container, dict):
             raise YamlError(f"line {index + 1}: mapping key inside a sequence")
         key, rest = match.group(1), match.group(2).strip()
+        if key in container:
+            raise YamlError(f"line {index + 1}: duplicate mapping key {key!r}")
 
         if rest in (">-", ">", ">+", "|-", "|", "|+"):
             container[key], index = _read_block_scalar(lines, index + 1, line_indent, rest)
@@ -280,6 +284,14 @@ def validate_schema(value, schema, root, location="$"):
         return validate_schema(value, resolve_ref(root, schema["$ref"]), root, location)
 
     errors = []
+    for subschema in schema.get("allOf", []):
+        errors.extend(validate_schema(value, subschema, root, location))
+    if "if" in schema:
+        branch = "then" if not validate_schema(value, schema["if"], root, location) else "else"
+        if branch in schema:
+            errors.extend(validate_schema(value, schema[branch], root, location))
+    if "not" in schema and not validate_schema(value, schema["not"], root, location):
+        errors.append(f"{location}: matches a forbidden shape")
     expected = schema.get("type")
     if expected and not TYPE_CHECKS.get(expected, lambda _: True)(value):
         return [f"{location}: expected {expected}, got {type(value).__name__}"]
@@ -304,6 +316,8 @@ def validate_schema(value, schema, root, location="$"):
     if isinstance(value, list):
         if "minItems" in schema and len(value) < schema["minItems"]:
             errors.append(f"{location}: requires at least {schema['minItems']} items")
+        if "maxItems" in schema and len(value) > schema["maxItems"]:
+            errors.append(f"{location}: allows at most {schema['maxItems']} items")
         if schema.get("uniqueItems"):
             marks = [json.dumps(item, sort_keys=True) for item in value]
             if len(set(marks)) != len(marks):
@@ -311,6 +325,11 @@ def validate_schema(value, schema, root, location="$"):
         if "items" in schema:
             for index, item in enumerate(value):
                 errors.extend(validate_schema(item, schema["items"], root, f"{location}[{index}]"))
+        if "contains" in schema and not any(
+            not validate_schema(item, schema["contains"], root, f"{location}[{index}]")
+            for index, item in enumerate(value)
+        ):
+            errors.append(f"{location}: contains no matching item")
 
     if isinstance(value, dict):
         for key in schema.get("required", []):
@@ -356,10 +375,67 @@ def source_version(data: dict):
 
 
 def collect(root: Path, globs) -> list[Path]:
-    found: list[Path] = []
+    found: dict[Path, Path] = {}
     for pattern in globs:
-        found.extend(sorted(root.glob(pattern)))
-    return found
+        for path in sorted(root.glob(pattern)):
+            found.setdefault(path.resolve(), path)
+    return list(found.values())
+
+
+def default_root(script_dir: Path = SCRIPT_DIR) -> Path:
+    """Find the landscape root for bundled and generated validator layouts."""
+    parent = script_dir.parent
+    if parent.name in {".agent", ".claude", ".codex"}:
+        return parent.parent
+    return parent
+
+
+def normalize_repo_path(raw: str) -> str:
+    """Return a normalized repository-relative POSIX path or raise ValueError."""
+    if not isinstance(raw, str) or not raw.strip():
+        raise ValueError("path must be a non-empty string")
+    if PurePosixPath(raw).is_absolute() or PureWindowsPath(raw).is_absolute():
+        raise ValueError("path must be repository-relative")
+    path = PurePosixPath(raw)
+    if ".." in path.parts:
+        raise ValueError("path must not escape the repository")
+    normalized = str(path)
+    if normalized in {"", "."}:
+        raise ValueError("path must identify a repository entry")
+    return normalized
+
+
+def content_fingerprint(path: Path) -> str:
+    """Hash current file content, or return the stable sentinel for absence."""
+    if not path.is_file():
+        return "absent"
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def git_worktree_root(path: Path) -> Path:
+    """Resolve Git-relative proposal paths even when the validator lives in a nested plugin."""
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(path), "rev-parse", "--show-toplevel"],
+            capture_output=True, text=True, timeout=30,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return path.resolve()
+    return Path(result.stdout.strip()).resolve() if result.returncode == 0 else path.resolve()
+
+
+def index_fingerprint(root: Path, path: str) -> str:
+    """Hash the Git index version of a path, or return the absence sentinel."""
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(root), "show", f":{path}"],
+            capture_output=True, timeout=30,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return "absent"
+    if result.returncode != 0:
+        return "absent"
+    return hashlib.sha256(result.stdout).hexdigest()
 
 
 def dependency_errors(workflow: dict, label: str) -> list[str]:
@@ -490,11 +566,11 @@ def validate(root: Path) -> tuple[list[str], dict]:
         if not isinstance(reason, str) or not reason.strip():
             errors.append(f"{rel(path)}: missing isolation_reason")
         contract = data.get("output_contract")
-        if not isinstance(contract, str) or not contract.strip():
-            errors.append(f"{rel(path)}: missing output_contract")
-        elif not NAME_PATTERN.match(contract):
+        if contract is not None and (not isinstance(contract, str) or not contract.strip()):
+            errors.append(f"{rel(path)}: output_contract must be a non-empty schema basename")
+        elif isinstance(contract, str) and not NAME_PATTERN.match(contract):
             errors.append(f"{rel(path)}: output_contract must be a schema basename, got {contract!r}")
-        elif contract not in contracts:
+        elif isinstance(contract, str) and contract not in contracts:
             errors.append(f"{rel(path)}: references unknown contract {contract}")
 
     # --- workflow schema ---------------------------------------------------
@@ -602,6 +678,7 @@ def validate(root: Path) -> tuple[list[str], dict]:
                 sources.append((path, document.get("version")))
         for relative in (".claude-plugin/marketplace.json", ".agents/plugins/marketplace.json"):
             # Marketplace catalogs live at the repository root, above the plugin.
+            is_codex_catalog = relative == ".agents/plugins/marketplace.json"
             path = above(relative)
             if path is None:
                 continue
@@ -617,6 +694,23 @@ def validate(root: Path) -> tuple[list[str], dict]:
             for entry in catalog.get("plugins", []):
                 if isinstance(entry, dict) and "version" in entry:
                     sources.append((path, entry["version"]))
+                if is_codex_catalog and isinstance(entry, dict):
+                    policy = entry.get("policy")
+                    if not isinstance(policy, dict):
+                        errors.append(f"{relative}: plugin {entry.get('name')!r} is missing policy")
+                    else:
+                        if policy.get("installation") not in {
+                            "NOT_AVAILABLE", "AVAILABLE", "INSTALLED_BY_DEFAULT"
+                        }:
+                            errors.append(
+                                f"{relative}: plugin {entry.get('name')!r} has invalid installation policy"
+                            )
+                        if policy.get("authentication") not in {"ON_INSTALL", "ON_USE"}:
+                            errors.append(
+                                f"{relative}: plugin {entry.get('name')!r} has invalid authentication policy"
+                            )
+                    if not isinstance(entry.get("category"), str) or not entry["category"].strip():
+                        errors.append(f"{relative}: plugin {entry.get('name')!r} is missing category")
 
         versioned = len(sources) + 1
         for path, version in sources:
@@ -690,16 +784,19 @@ def check_proposal(root: Path, proposal_path: Path) -> list[str]:
     if errors:
         return errors
 
-    def normalize(path: str) -> str:
-        return path.rstrip("/")
+    worktree_root = git_worktree_root(root)
 
     approved: set[str] = set()
     for operation in proposal.get("operations", []):
-        approved.add(normalize(operation["path"]))
-        if operation.get("from"):
-            approved.add(normalize(operation["from"]))
+        for field in ("path", "from"):
+            if not operation.get(field):
+                continue
+            try:
+                approved.add(normalize_repo_path(operation[field]))
+            except ValueError as exc:
+                errors.append(f"{operation[field]}: invalid {field}: {exc}")
 
-    # step2 #4 and #5: constraints JSON Schema's subset cannot express.
+    # Keep clear messages for cross-field constraints already enforced by the schema.
     for operation in proposal.get("operations", []):
         action, path = operation["action"], operation["path"]
         if action in ("move", "delete") and operation.get("destructive") is not True:
@@ -708,28 +805,62 @@ def check_proposal(root: Path, proposal_path: Path) -> list[str]:
             errors.append(f"{path}: a move must name the path it came from")
         if action != "move" and operation.get("from"):
             errors.append(f"{path}: only a move may name a from path")
+        if operation.get("authority_expanding") is True:
+            if not operation.get("effects"):
+                errors.append(f"{path}: an authority-expanding operation must describe its effects")
+            if not operation.get("approved_sha256"):
+                errors.append(f"{path}: an authority-expanding operation must lock its approved content hash")
     if errors:
         return errors
 
-    changed, staged, git_error = changed_paths(root)
+    changed, staged, git_error = changed_paths(worktree_root)
     if git_error:
         return [f"cannot compare against the proposal: {git_error}"]
 
     # The proposal file itself is a record of the change, not part of it.
     try:
-        approved.add(normalize(str(proposal_path.resolve().relative_to(root.resolve()))))
+        approved.add(normalize_repo_path(str(proposal_path.resolve().relative_to(worktree_root))))
     except ValueError:
         pass
 
-    changed = {normalize(path) for path in changed}
-    staged = {normalize(path) for path in staged}
+    changed = {normalize_repo_path(path) for path in changed}
+    staged = {normalize_repo_path(path) for path in staged}
 
-    for path in sorted(changed - approved):
+    preexisting: set[str] = set()
+    for entry in proposal.get("preexisting_changes", []):
+        try:
+            path = normalize_repo_path(entry["path"])
+        except ValueError as exc:
+            errors.append(f"{entry.get('path')}: invalid preexisting path: {exc}")
+            continue
+        unchanged = (
+            content_fingerprint(worktree_root / path) == entry["worktree_sha256"]
+            and index_fingerprint(worktree_root, path) == entry["index_sha256"]
+        )
+        if unchanged:
+            preexisting.add(path)
+
+    for path in sorted(changed - approved - preexisting):
         errors.append(f"{path}: changed but not named in the approved proposal")
 
-    private = {normalize(path) for path in proposal.get("private_to_local", [])}
-    for path in sorted(staged & private):
-        errors.append(f"{path}: staged for commit but marked private_to_local")
+    for operation in proposal.get("operations", []):
+        approved_hash = operation.get("approved_sha256")
+        if not approved_hash:
+            continue
+        path = normalize_repo_path(operation["path"])
+        actual_hash = content_fingerprint(worktree_root / path)
+        if actual_hash != approved_hash:
+            errors.append(f"{path}: content does not match the approved hash")
+
+    private = []
+    for raw in proposal.get("private_to_local", []):
+        try:
+            private.append(normalize_repo_path(raw))
+        except ValueError as exc:
+            errors.append(f"{raw}: invalid private path: {exc}")
+    for path in sorted(staged):
+        if any(path == private_path or path.startswith(private_path + "/") for private_path in private):
+            errors.append(f"{path}: staged for commit but marked private_to_local")
 
     return errors
 
@@ -743,12 +874,34 @@ def main() -> int:
         metavar="FILE",
         help="an approved change-proposal JSON file; confirms the working tree changed only what it named",
     )
+    parser.add_argument(
+        "--snapshot",
+        action="store_true",
+        help="print preexisting_changes JSON for the current working tree before implementation",
+    )
     args = parser.parse_args()
 
-    root = Path(args.path) if args.path else SCRIPT_DIR.parent
+    root = Path(args.path) if args.path else default_root()
     if not root.is_dir():
         print(f"not a directory: {root}", file=sys.stderr)
         return 2
+
+    if args.snapshot:
+        worktree_root = git_worktree_root(root)
+        changed, staged, git_error = changed_paths(worktree_root)
+        if git_error:
+            print(git_error, file=sys.stderr)
+            return 1
+        snapshot = []
+        for path in sorted(changed):
+            normalized = normalize_repo_path(path)
+            snapshot.append({
+                "path": normalized,
+                "worktree_sha256": content_fingerprint(worktree_root / normalized),
+                "index_sha256": index_fingerprint(worktree_root, normalized),
+            })
+        print(json.dumps({"preexisting_changes": snapshot}, indent=2))
+        return 0
 
     errors, summary = validate(root)
     if args.proposal:

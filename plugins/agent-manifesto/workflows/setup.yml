@@ -44,7 +44,9 @@ steps:
     goal: >-
       Propose the smallest landscape that preserves useful existing artifacts and gives each concern one owner. List
       files to create, change, move, or remove; explain every optional skill, workflow, agent, contract, and enforcement
-      mechanism; identify private information that must remain local.
+      mechanism; identify private information that must remain local. Snapshot pre-existing working-tree changes. For
+      authority-expanding settings, permissions, hooks, or external access, state the effects and lock the approved
+      post-change content hash.
     output_contract: change-proposal
     on_failure: stop
 
@@ -60,7 +62,8 @@ steps:
     goal: >-
       Implement only the approved landscape using native tool structures. Keep the root contract small, install the
       universal components and the landscape validator, preserve established project language, and add no empty or
-      speculative layer.
+      speculative layer. An adapter preserves its source trigger, required inputs, authority, tools, dependencies,
+      stopping conditions, exact machine-consumed vocabulary, and output semantics.
     input_contract: change-proposal
     on_failure: stop
 
@@ -68,8 +71,8 @@ steps:
     needs: [compose]
     goal: >-
       Run available deterministic checks, validate YAML workflows and structured contracts, confirm native discovery,
-      and report checks that cannot be run. Confirm the working-tree diff touches only paths named in the approved
-      proposal.
+      and report checks that cannot be run. Compare adapters with their sources; confirm approved hashes match,
+      pre-existing changes did not drift, and the working-tree diff touches only approved paths.
     input_contract: change-proposal
     on_failure: stop
 

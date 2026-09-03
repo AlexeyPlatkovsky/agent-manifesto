@@ -29,11 +29,39 @@ Staging copies the fixture to a scratch directory, so a run never dirties the co
 workflow there against the case's prompt, in a fresh session with no memory of this repository. Then:
 
 ```text
-python3 evals/run.py plain-notes-setup --check /path/to/staged/copy
+python3 evals/run.py plain-notes-setup --check /path/to/staged/copy --judgments judgments.json
 ```
 
-The runner checks the path assertions and prints the judged assertions as a checklist. Judge them against the run's
-transcript and diff, not against its summary — a run that claims restraint in prose while creating six files fails.
+The runner checks paths and requires one evidence-backed judgment for every behavioral assertion. A missing or malformed
+judgment exits `2`; a failed mechanical or behavioral assertion exits `1`. Judge the run against its transcript and
+diff, not its summary—a run that claims restraint while creating six files fails.
+
+```json
+{
+  "judgments": [
+    {
+      "kind": "must",
+      "assertion": "exact assertion text from the case file",
+      "passed": true,
+      "evidence": "transcript or diff evidence supporting the judgment"
+    }
+  ]
+}
+```
+
+## Release gate
+
+Before a versioned release creates its tag, CI runs every case in a separate, non-persistent Claude session and uses a
+second fresh session to judge every assertion from the full transcript and filesystem diff:
+
+```text
+PYTHONDONTWRITEBYTECODE=1 python3 evals/run-live.py --artifacts /path/to/evidence
+```
+
+The release job requires `ANTHROPIC_API_KEY`, fails closed when the key or any judgment is missing, and uploads the
+transcripts, diffs, and judgments as a GitHub Actions artifact. Ordinary validation does not spend API credits; it
+validates the case definitions and runner with regression tests. A release cannot tag or publish until the live gate
+passes.
 
 ## Comparing against a baseline
 
@@ -48,10 +76,9 @@ with-without` mode that scores a run against a no-plugin baseline. That ablation
 Principle 8, and it is where these cases should eventually live — Principle 5 prefers a tool's native mechanism over a
 local imitation.
 
-It is in early access and was not enabled on the account used to build this suite, so its `case.yaml` schema could not
-be verified. The runner here is the interim: it uses a different filename (`cases/*.yml`, not `case.yaml`), so the two
-layouts do not collide and cases can migrate one at a time. Check `claude plugin eval --help` before adding many more
-cases here.
+It remains early access and is not enabled on the account maintaining this suite, so its authoring schema and execution
+cannot yet be verified end to end. The interim runner uses `cases/*.yml`, not `case.yaml`, so the layouts do not collide
+and cases can migrate one at a time. Recheck `claude plugin eval init --help` before extending this harness.
 
 ## Adding a case
 

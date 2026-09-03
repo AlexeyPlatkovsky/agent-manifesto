@@ -36,7 +36,8 @@ steps:
     goal: >-
       Present the exact removals, the destination for every surviving fact, policy, and boundary, and the
       documentation files the removal will touch. State what the project loses, what stops being enforced, and what
-      becomes the user's responsibility again.
+      becomes the user's responsibility again. Snapshot pre-existing changes, and lock the described effects and
+      content hash of every authority-expanding operation.
     output_contract: change-proposal
     on_failure: stop
 
@@ -61,20 +62,34 @@ steps:
     input_contract: change-proposal
     on_failure: stop
 
-  - id: verify
+  - id: document
     needs: [remove]
     goal: >-
-      Confirm the selected tools start cleanly with no dangling references, that surviving content is discoverable at
-      its new location, and that the diff touches only paths named in the approved proposal.
+      Align authoritative documentation with the removal, editing only documentation paths named in the proposal.
+    skills: [documentation-maintenance]
     input_contract: change-proposal
     on_failure: stop
 
-  - id: finish
-    needs: [verify]
+  - id: verify
+    needs: [document]
     goal: >-
-      Align the project's authoritative documentation with the removal, editing only the documentation paths the
-      proposal named, then summarize what was retired, what survived and where, what is no longer enforced, and how to
-      restore the harness from version control if needed.
-    skills: [documentation-maintenance]
+      Confirm the selected tools start cleanly with no dangling references, that surviving content is discoverable at
+      its new location, approved hashes match, pre-existing changes did not drift, and the diff touches only approved
+      paths.
     input_contract: change-proposal
+    on_failure: stop
+
+  - id: evaluate
+    needs: [verify]
+    goal: Independently evaluate the surviving landscape and retirement boundaries in fresh context.
+    agent: instruction-evaluator
+    output_contract: instruction-evaluation
+    retries: 1
+    on_failure: stop
+
+  - id: finish
+    needs: [evaluate]
+    goal: >-
+      Summarize what was retired, what survived and where, what is no longer enforced, and how to restore the harness
+      from version control if needed, without changing files.
     on_failure: stop

@@ -33,18 +33,26 @@ steps:
     output_contract: instruction-evaluation
     on_failure: stop
 
-  - id: propose
+  - id: report
     needs: [evaluate]
     goal: >-
-      Present findings by impact and propose the minimum useful changes. Distinguish durable context, policy, authority
-      boundaries, and temporary scaffolding. State what was not verified.
+      Present findings by impact, including a clear no-change conclusion when no actionable finding exists. Distinguish
+      durable context, policy, authority boundaries, and temporary scaffolding. State what was not verified.
+    on_failure: stop
+
+  - id: propose
+    needs: [report]
+    goal: >-
+      Propose the minimum useful file effects for actionable findings the user wants fixed. Snapshot pre-existing
+      working-tree changes, and lock the approved content hash and effects of every authority-expanding operation.
+    when: actionable findings exist and the user requests or chooses changes
     output_contract: change-proposal
     on_failure: stop
 
   - id: approve
     needs: [propose]
     goal: Obtain explicit approval before applying any review finding.
-    when: the user requested fixes or chooses to proceed after the review
+    when: a change proposal was produced
     input_contract: change-proposal
     approval: required
     on_failure: stop
@@ -52,7 +60,7 @@ steps:
   - id: apply
     needs: [approve]
     goal: Apply only approved changes without expanding the landscape.
-    when: approval to modify the landscape was granted
+    when: the change proposal was approved
     input_contract: change-proposal
     on_failure: stop
 

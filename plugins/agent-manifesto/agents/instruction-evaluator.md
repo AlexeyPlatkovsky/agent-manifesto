@@ -1,7 +1,7 @@
 ---
 version: 3.0.0
 project: agent-manifest
-url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/agents/instruction-evaluator.md
+url: https://github.com/AlexeyPlatkovsky/agent-manifesto/blob/main/plugins/agent-manifesto/agents/instruction-evaluator.md
 name: instruction-evaluator
 description: Independently reviews an AI landscape for usefulness, clarity, boundaries, and tool compatibility.
 isolation_reason: Independent review should not inherit the assumptions and momentum of the composition context.
@@ -39,11 +39,14 @@ Assess whether:
 - each skill owns one task-scoped policy and no orchestration
 - each workflow expresses a justified procedure without prescribing model reasoning
 - each permanent agent has a recurring responsibility and a material fresh-context reason
+- every adapter preserves its source trigger, inputs, authority, tools, dependencies, stopping conditions, consumed
+  vocabulary, and output semantics
 - structured boundaries use contracts and validate against them
 - workflow references resolve to real skills, agents, and contracts
 - the selected tools can discover their artifacts through current native mechanisms
 - rules presented as guarantees have deterministic enforcement where practical
-- the landscape preserves useful existing artifacts and respects the approved change scope
+- the landscape preserves useful existing artifacts, leaves baseline changes untouched, and respects approved paths,
+  authority effects, and locked content hashes
 - ordinary work can proceed without framework-specific ceremony
 
 Prioritize concrete behavioral or maintenance risk. Do not create findings solely for stylistic preference or because an

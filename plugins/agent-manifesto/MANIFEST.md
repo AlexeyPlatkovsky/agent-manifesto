@@ -1,7 +1,7 @@
 ---
 version: 3.0.0
 project: agent-manifest
-url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/MANIFEST.md
+url: https://github.com/AlexeyPlatkovsky/agent-manifesto/blob/main/plugins/agent-manifesto/MANIFEST.md
 ---
 
 # Agent Manifesto

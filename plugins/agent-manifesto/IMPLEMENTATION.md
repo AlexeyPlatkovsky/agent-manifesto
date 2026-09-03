@@ -1,7 +1,7 @@
 ---
 version: 3.0.0
 project: agent-manifest
-url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/IMPLEMENTATION.md
+url: https://github.com/AlexeyPlatkovsky/agent-manifesto/blob/main/plugins/agent-manifesto/IMPLEMENTATION.md
 ---
 
 # Implementation
@@ -136,13 +136,14 @@ Valid reasons include:
 - a bounded parallel responsibility
 - restricted tools or permissions
 
-An agent declares its responsibility, input boundary, authority, stopping conditions, and output contract. It does not
-own orchestration or reproduce shared policies. A one-off isolated task may use the tool's built-in subagent without
-creating a permanent custom agent.
+An agent declares its responsibility, input boundary, authority, stopping conditions, and expected output. Add an
+`output_contract` only when another consumer must parse or validate a structured result. It does not own orchestration
+or reproduce shared policies. A one-off isolated task may use the tool's built-in subagent without creating a permanent
+custom agent.
 
-An adapted agent must preserve the responsibility, authority boundary, stopping conditions, isolation rationale, and
-output contract of its template. Keep the agent directory free of prose files: hosts that scan it load every Markdown
-file as an agent.
+An adapted agent must preserve the source trigger, required inputs, responsibility, authority boundary, tool limits,
+dependencies, stopping conditions, isolation rationale, exact vocabulary consumed by other procedures, and output
+semantics. Keep the agent directory free of prose files: hosts that scan it load every Markdown file as an agent.
 
 ### Contracts
 
@@ -152,10 +153,11 @@ Use contracts for workflow definitions, agent results, or handoffs that another 
 use contracts for conversational status reports, qualitative policy, or evidence that a human can assess directly.
 
 The `change-proposal` contract carries the approved scope. Every workflow that changes files produces one before asking
-for approval and treats it as the boundary for every later step: the file effects the user agreed to, whether each
-one is destructive, the layer that owns each file, the external actions that need their own consent, the paths that
-must stay local, and the assumptions the proposal could not verify. It exists because approved scope is the framework's
-highest-stakes boundary and prose cannot be checked against a diff.
+for approval and treats it as the boundary for every later step: the file effects the user agreed to, whether each is
+destructive or authority-expanding, the layer that owns each file, the external actions needing separate consent, the
+paths that must stay local, and unverified assumptions. Record fingerprints for pre-existing working-tree changes so
+they are ignored only while unchanged. An authority-expanding operation states its effects and locks the approved
+post-change content hash; path approval alone cannot authorize an unmentioned permission or authority change.
 
 Every step that changes files declares it, including documentation alignment. A step that edits files outside the
 approved operations has left the boundary the user agreed to.
@@ -243,14 +245,22 @@ Discussion and review do not authorize edits. An approved proposal authorizes on
 External actions such as commits, pushes, deployments, publication, messages, purchases, or production changes require
 the user's explicit authority unless a pre-existing project policy clearly grants it.
 
-Approved scope is recorded as a `change-proposal` and verified after implementation. Compare the working-tree diff with
-the approved operations; when the proposal was written to a file, make that comparison deterministic:
+Approved scope is recorded as a `change-proposal` and verified after implementation. Before proposing changes in a
+dirty repository, capture the baseline to include as `preexisting_changes`:
 
 ```text
-python3 scripts/validate.py --proposal approved-change.json
+python3 scripts/validate.py . --snapshot
 ```
 
-The check reports any path changed without approval and any `private_to_local` path staged for commit.
+After implementation, compare the working-tree delta and locked content hashes with the approved operations:
+
+```text
+python3 scripts/validate.py . --proposal approved-change.json
+```
+
+The check reports unapproved changes, drift in pre-existing changes, mismatched approved hashes, and any staged path at
+or below a `private_to_local` entry. A generated validator under `.claude/scripts/` discovers the project root
+automatically; passing `.` remains explicit and portable.
 
 ---
 

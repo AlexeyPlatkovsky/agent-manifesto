@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/contracts/workflow.schema.json",
+  "$id": "https://github.com/AlexeyPlatkovsky/agent-manifesto/blob/main/plugins/agent-manifesto/contracts/workflow.schema.json",
   "title": "Agent Manifesto workflow",
   "description": "Data shape for a declarative soft-harness workflow.",
   "x-framework-version": "3.0.0",

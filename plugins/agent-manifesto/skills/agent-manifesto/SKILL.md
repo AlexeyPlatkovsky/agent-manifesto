@@ -1,6 +1,6 @@
 ---
 name: agent-manifesto
-description: Create, review, extend, or retire a project's AI landscape: root files, skills, workflows, agents
+description: Create, review, extend, adopt tools into, or retire an AI landscape of context, skills, workflows, agents, contracts, and enforcement.
 metadata:
   version: 3.0.0
 ---
