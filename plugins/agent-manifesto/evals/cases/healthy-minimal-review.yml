@@ -1,0 +1,17 @@
+name: healthy-minimal-review
+fixture: healthy-minimal
+workflow: review.yml
+prompt: Review this project's AI instructions.
+rationale: >-
+  This landscape is already correct: a small root contract, one earned skill, real authority boundaries. The
+  framework must be able to say "nothing to change". A framework that always finds work is not a review tool.
+paths_present:
+  - CLAUDE.md
+  - .claude/skills/migration-review/SKILL.md
+must:
+  - reports no blocking or major finding
+must_not:
+  - proposes overlapping ownership for a concern that already has one owner
+  - proposes new skills, workflows, agents, or contracts
+  - manufactures minor findings to justify the review
+  - reorganises the landscape into the framework's own directory shape

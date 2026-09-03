@@ -1,0 +1,89 @@
+version: 3.0.0
+name: landscape-setup
+description: Create a minimal AI landscape or adjust an existing one without discarding useful project-specific context.
+applies_when:
+  - the user wants to set up an AI landscape
+  - an existing landscape needs structural adjustment
+inputs:
+  - MANIFEST.md
+  - IMPLEMENTATION.md
+steps:
+  - id: inventory
+    goal: >-
+      Inspect the repository, documentation, configured AI tools, native instruction files, skills, workflows, agents,
+      contracts, enforcement mechanisms, and working-tree state before asking questions.
+    on_failure: stop
+
+  - id: establish-scope
+    needs: [inventory]
+    goal: >-
+      Determine whether this is creation or adjustment, which tools are actually in scope, and which information is
+      personal, project-local, or team-shared. Separate observed evidence from inference.
+    on_failure: stop
+
+  - id: clarify
+    needs: [establish-scope]
+    goal: >-
+      Ask only unresolved questions whose answers change the landscape. Cover applicable business or project context,
+      role, recurring work, voice, banned language, output defaults, preferred methodologies, quality expectations,
+      authority limits, privacy, and external-action boundaries. Ask factual questions directly.
+    skills: [brainstorm]
+    when: meaningful choices or blocking facts remain unresolved
+    on_failure: ask_user
+
+  - id: verify-native-support
+    needs: [establish-scope]
+    goal: >-
+      Verify the current official discovery and configuration behavior of the selected AI tool. Prefer local official
+      documentation when current; otherwise research official sources and record any unverified capability.
+    for_each: each AI tool selected in scope
+    on_failure: ask_user
+
+  - id: propose
+    needs: [clarify, verify-native-support]
+    goal: >-
+      Propose the smallest landscape that preserves useful existing artifacts and gives each concern one owner. List
+      files to create, change, move, or remove; explain every optional skill, workflow, agent, contract, and enforcement
+      mechanism; identify private information that must remain local.
+    output_contract: change-proposal
+    on_failure: stop
+
+  - id: approve
+    needs: [propose]
+    goal: Obtain explicit user approval for the proposed files and for every move, rename, merge, deletion, or external action.
+    input_contract: change-proposal
+    approval: required
+    on_failure: stop
+
+  - id: compose
+    needs: [approve]
+    goal: >-
+      Implement only the approved landscape using native tool structures. Keep the root contract small, install the
+      universal components and the landscape validator, preserve established project language, and add no empty or
+      speculative layer.
+    input_contract: change-proposal
+    on_failure: stop
+
+  - id: validate
+    needs: [compose]
+    goal: >-
+      Run available deterministic checks, validate YAML workflows and structured contracts, confirm native discovery,
+      and report checks that cannot be run. Confirm the working-tree diff touches only paths named in the approved
+      proposal.
+    input_contract: change-proposal
+    on_failure: stop
+
+  - id: evaluate
+    needs: [validate]
+    goal: Independently evaluate the changed landscape in fresh context.
+    agent: instruction-evaluator
+    output_contract: instruction-evaluation
+    retries: 1
+    on_failure: stop
+
+  - id: reconcile
+    needs: [evaluate]
+    goal: >-
+      Summarize the resulting landscape, the verification performed, findings deferred by agreement, and the next
+      actions that remain the user's to take.
+    on_failure: stop

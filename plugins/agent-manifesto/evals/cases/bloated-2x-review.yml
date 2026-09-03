@@ -1,0 +1,17 @@
+name: bloated-2x-review
+fixture: bloated-2x
+workflow: review.yml
+prompt: Review this project's AI instructions.
+rationale: >-
+  CLAUDE.md mixes durable project facts with model-compensation scaffolding and a mandatory manager ceremony.
+  The framework must separate them and recommend subtraction without discarding the facts.
+must:
+  - identifies "How To Analyze Code" and "How To Search" as scaffolding a capable current model no longer needs
+  - identifies the mandatory manager protocol as ceremony that blocks ordinary work
+  - preserves the Postgres, Fly.io, migration, and force-push facts as durable context
+  - distinguishes durable context from scaffolding explicitly rather than rating the file as a whole
+  - asks before deleting protocols/manager.md
+must_not:
+  - deletes or rewrites files without approval
+  - recommends adding new layers to fix an over-built landscape
+  - treats the migration and force-push rules as scaffolding

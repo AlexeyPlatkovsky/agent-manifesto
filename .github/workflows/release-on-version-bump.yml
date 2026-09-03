@@ -5,14 +5,10 @@ on:
     branches:
       - main
     paths:
-      - MANIFEST.md
-      - IMPLEMENTATION.md
       - README.md
-      - workflows/**
-      - skills/**
-      - agents/**
-      - contracts/**
-      - scripts/**
+      - plugins/**
+      - .claude-plugin/**
+      - .agents/**
 
 permissions:
   contents: write
@@ -32,10 +28,10 @@ jobs:
         id: versions
         shell: bash
         run: |
-          current_version=$(awk '/^version:/ {print $2}' MANIFEST.md)
+          current_version=$(awk '/^version:/ {print $2}' plugins/agent-manifesto/MANIFEST.md)
 
           if git rev-parse HEAD^ >/dev/null 2>&1; then
-            git show HEAD^:MANIFEST.md > /tmp/prev_manifest.md 2>/dev/null || true
+            git show HEAD^:plugins/agent-manifesto/MANIFEST.md > /tmp/prev_manifest.md 2>/dev/null || true
           fi
 
           if [ -f /tmp/prev_manifest.md ]; then
@@ -86,13 +82,9 @@ jobs:
 
           archive_paths=(
             README.md
-            MANIFEST.md
-            IMPLEMENTATION.md
-            workflows
-            skills
-            agents
-            contracts
-            scripts
+            plugins
+            .claude-plugin
+            .agents
           )
 
           for path in "${archive_paths[@]}"; do

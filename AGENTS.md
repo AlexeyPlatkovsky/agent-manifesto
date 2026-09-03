@@ -1,26 +1,37 @@
 # Maintain Framework Version
 
-Use this skill whenever a task changes the `agent-manifest` framework itself.
+Apply these instructions whenever a task changes the `agent-manifest` framework itself.
 
 This file is not part of the Agent Manifesto framework. Its only purpose is to maintain correct project version bumping.
 Do not treat it as a framework source when discussing or designing framework changes. Apply it only when a task requires
 a project version bump.
 
 This repository is versioned as a single unit. The following files must always share the same framework version:
-- `MANIFEST.md`
-- `IMPLEMENTATION.md`
-- `README.md`
-- `workflows/*.yml`
-- `skills/*/SKILL.md`
-- `agents/*.md`
-- `contracts/*.schema.json`
+- `README.md` (repository root)
+- `.claude-plugin/marketplace.json` (repository root)
+- `plugins/agent-manifesto/MANIFEST.md`
+- `plugins/agent-manifesto/IMPLEMENTATION.md`
+- `plugins/agent-manifesto/workflows/*.yml`
+- `plugins/agent-manifesto/skills/*/SKILL.md`
+- `plugins/agent-manifesto/agents/*.md`
+- `plugins/agent-manifesto/contracts/*.schema.json`
+- `plugins/agent-manifesto/.claude-plugin/plugin.json`
+- `plugins/agent-manifesto/.codex-plugin/plugin.json`
 
-Markdown sources store the value in YAML frontmatter as `version`. Workflow YAML stores it as the top-level `version`.
-JSON Schema contracts store it as `x-framework-version`.
+`.agents/plugins/marketplace.json` carries no version: Codex takes a plugin's version from its manifest.
 
-No other file may hardcode the framework version. `MANIFEST.md` is the single source of truth: `scripts/validate-framework.rb`
-reads the expected version from it, and `contracts/workflow.schema.json` constrains `version` with a major-version
-pattern rather than an exact value. A bump that crosses a major version must widen that pattern.
+Markdown sources store the value in YAML frontmatter as `version`, except `SKILL.md` files, which store it as
+`metadata.version` — the Agent Skills spec rejects frontmatter keys it does not define, so a top-level `version` there
+breaks packaging. Workflow YAML stores it as the top-level `version`. JSON Schema contracts store it as
+`x-framework-version`. Plugin manifests store it as `version`; marketplace catalogs store it as `version` on each
+plugin entry.
+
+No other file may hardcode the framework version. `MANIFEST.md` is the single source of truth. Paths below are
+relative to `plugins/agent-manifesto/`.
+
+`scripts/validate.py` reads the expected version from `MANIFEST.md`, and `contracts/workflow.schema.json` constrains
+`version` with a major-version pattern rather than an exact value. A bump that crosses a major version must widen that
+pattern.
 
 ## Rules
 
@@ -39,7 +50,7 @@ pattern rather than an exact value. A bump that crosses a major version must wid
 
 Before declaring the task complete:
 
-1. Run `ruby scripts/validate-framework.rb`.
+1. Run `python3 plugins/agent-manifesto/scripts/validate.py`.
 2. Confirm the framework version values are identical across all files.
 3. Confirm the bump level matches the kind of change made.
 4. If any file was missed, fix it before reporting completion.

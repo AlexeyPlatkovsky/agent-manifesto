@@ -1,0 +1,16 @@
+{
+  "name": "agent-manifesto",
+  "interface": {
+    "displayName": "Agent Manifesto"
+  },
+  "plugins": [
+    {
+      "name": "agent-manifesto",
+      "source": {
+        "source": "local",
+        "path": "./plugins/agent-manifesto"
+      },
+      "description": "Define the system your AI works in: context, policies, procedures, responsibilities, contracts, and enforcement — instead of teaching the model how to think."
+    }
+  ]
+}

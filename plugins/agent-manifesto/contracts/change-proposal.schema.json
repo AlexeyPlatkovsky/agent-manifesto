@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/contracts/change-proposal.schema.json",
+  "title": "Landscape change proposal",
+  "description": "The exact set of file effects a user is asked to approve, and the boundary every later step is bound by.",
+  "x-framework-version": "3.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "summary",
+    "operations"
+  ],
+  "properties": {
+    "summary": {
+      "type": "string",
+      "minLength": 20,
+      "description": "What the change accomplishes, in the user's terms."
+    },
+    "operations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/operation"
+      }
+    },
+    "external_actions": {
+      "type": "array",
+      "description": "Effects outside the working tree that need their own consent: commits, pushes, deployments, publication, messages, purchases, or production changes.",
+      "items": {
+        "$ref": "#/$defs/external_action"
+      }
+    },
+    "private_to_local": {
+      "type": "array",
+      "description": "Paths holding personal information that must not be committed to a shared repository.",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "unverified": {
+      "type": "array",
+      "description": "Facts or tool behaviors the proposal assumes but could not confirm.",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "$defs": {
+    "operation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action",
+        "path",
+        "concern",
+        "reason",
+        "destructive"
+      ],
+      "properties": {
+        "action": {
+          "enum": [
+            "create",
+            "modify",
+            "move",
+            "delete"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Repository-relative path. For a move, the destination."
+        },
+        "from": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Required for a move: the current path."
+        },
+        "concern": {
+          "enum": [
+            "context",
+            "root-contract",
+            "skill",
+            "workflow",
+            "agent",
+            "contract",
+            "enforcement",
+            "documentation",
+            "project-code"
+          ],
+          "description": "Which landscape layer owns this file. One file, one owning concern."
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 12,
+          "description": "Why this specific effect is needed. Not a restatement of the action."
+        },
+        "destructive": {
+          "type": "boolean",
+          "description": "True when the effect removes or overwrites work the user already had. Always true for a move or a delete; state it explicitly on every operation so consent is never inferred."
+        }
+      }
+    },
+    "external_action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action",
+        "reason"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "minLength": 8
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 12
+        }
+      }
+    }
+  }
+}
