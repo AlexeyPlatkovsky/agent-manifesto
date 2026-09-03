@@ -1,0 +1,69 @@
+version: 3.0.0
+name: landscape-extension
+description: Add or change one bounded landscape capability while preserving existing authority and simplicity.
+applies_when:
+  - the user requests a new or changed context source, skill, workflow, agent, contract, adapter, or enforcement mechanism
+inputs:
+  - MANIFEST.md
+  - IMPLEMENTATION.md
+steps:
+  - id: inspect
+    goal: >-
+      Inspect the requested concern, its existing owner, related artifacts, selected tools, and repository evidence.
+      Confirm that the baseline landscape is coherent enough to extend safely.
+    on_failure: stop
+
+  - id: place
+    needs: [inspect]
+    goal: >-
+      Place the concern in context, root contract, skill, workflow, agent, contract, or deterministic enforcement.
+      Justify fresh context for any permanent agent and repeated sequence for any workflow.
+    on_failure: stop
+
+  - id: clarify
+    needs: [place]
+    goal: Resolve only choices or facts that materially change the requested addition.
+    skills: [brainstorm]
+    when: meaningful alternatives or blocking facts remain
+    on_failure: ask_user
+
+  - id: propose
+    needs: [clarify]
+    goal: >-
+      Present the minimal file-level change, its trigger, ownership, native discovery path, dependencies, validation,
+      and any replacement or migration it requires.
+    on_failure: stop
+
+  - id: approve
+    needs: [propose]
+    goal: Obtain explicit approval for the proposed change and every destructive or authority-expanding effect.
+    approval: required
+    on_failure: stop
+
+  - id: implement
+    needs: [approve]
+    goal: Implement the approved bounded change without adding adjacent speculative capabilities.
+    on_failure: stop
+
+  - id: validate
+    needs: [implement]
+    goal: >-
+      Validate syntax, references, schemas, native discovery, and relevant project behavior. Inspect the diff and report
+      unavailable checks.
+    on_failure: stop
+
+  - id: evaluate
+    needs: [validate]
+    goal: Independently evaluate the changed landscape artifacts in fresh context.
+    agent: instruction-evaluator
+    output_contract: instruction-evaluation
+    retries: 1
+    on_failure: stop
+
+  - id: finish
+    needs: [evaluate]
+    goal: >-
+      Align the project's authoritative documentation with the change, then summarize changes, evidence, remaining
+      risks, and optional future work.
+    skills: [documentation-maintenance]
+    on_failure: stop

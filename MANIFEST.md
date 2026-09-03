@@ -1,140 +1,125 @@
 ---
-version: 2.10.0
+version: 3.0.0
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/MANIFEST.md
 ---
 
-# MANIFEST.md
+# Agent Manifesto
 
 ## Purpose
 
-This document defines what the agent-manifest framework values and what must be true of a well-designed AI instruction system.
+Agent Manifesto helps a user create, review, or adjust a lightweight AI landscape: a soft harness that gives capable
+models the context, boundaries, and reusable structure they cannot reliably infer for themselves.
 
-It does not define file layouts, derivation rules, or runtime mechanics. For how these principles are applied in practice, see [IMPLEMENTATION.md](IMPLEMENTATION.md).
+The framework must improve the user's work without making the user operate the framework.
 
 ---
 
-# Values
+## Values
 
 The framework values:
 
-- useful context over complete context
-- clear authority over convenient duplication
-- direct execution over premature orchestration
-- explicit decisions over inferred behavior
-- current need over speculative design
-- user consent over autonomous risky change
+- useful context over comprehensive prompting
+- clear outcomes over prescribed reasoning
+- direct work over automatic orchestration
+- native tool behavior over simulated machinery
+- mechanical guarantees over behavioral reminders
+- current evidence over accumulated scaffolding
+- user authority over autonomous expansion
 
 The items on the right still matter, but the items on the left matter more.
 
 ---
 
-# Principles
+## Landscape Model
 
-Six principles, two per group. Each is meant to be remembered as a short phrase you can apply without rereading.
+Every concern has one natural home:
 
-## Context And Simplicity
+- **Facts and preferences belong to context.**
+- **Universal authority limits belong to the root contract.**
+- **Task-scoped policies belong to skills.**
+- **Procedures and sequence belong to workflows.**
+- **Fresh-context responsibilities belong to agents.**
+- **Data shapes belong to contracts.**
+- **Reasoning belongs to the model.**
+- **Hard guarantees belong to deterministic enforcement.**
 
-### 1. Load Only What You Need
-
-Default context should contain only what the current work needs to begin correctly.
-
-**Prefer:**
-- Small always-available instructions
-- Capabilities loaded when relevant
-- Clear entry points into deeper guidance
-
-**Avoid:**
-- Carrying task-specific guidance everywhere
-- Adding context as a substitute for design
-- Treating more instruction as automatically safer
+An artifact must not absorb a concern that has a better home.
 
 ---
 
-### 2. Earn Complexity
+## Principles
 
-The smallest structure that solves the real current problem wins. Layers, abstractions, and coordination must be justified by real risk, repetition, or scale — not by imagined futures.
+### 1. Supply What The Model Cannot Know
 
-**Prefer:**
-- Direct handling for simple work
-- Generalization after the pattern is proven
-- Changes traceable to an actual requirement
+Record business facts, project realities, user preferences, authoritative sources, and explicit authority boundaries.
+Do not explain general practices a capable current model already understands.
 
-**Avoid:**
-- Speculative configurability and single-use abstractions
-- Starting with the heaviest structure available
-- Treating complexity as evidence of quality
+Ask of every instruction:
 
----
+> Would a better model make this unnecessary?
 
-## Authority And Structure
+If yes, treat it as temporary scaffolding and require evidence for keeping it. If no, preserve it as durable context,
+policy, or authority.
 
-### 3. One Artifact, One Job
+### 2. Keep The Default Context Small
 
-Every artifact should have one clear responsibility it can be judged against. Decision artifacts decide. Execution artifacts execute. Reference artifacts inform.
+Always-loaded files are a starting brief and map. Load task policies, procedures, specialist responsibilities, and
+detailed facts only when relevant.
 
-Execution artifacts are not interchangeable. Some run inside the working context and may interact directly as work proceeds; others act as isolated actors with a fixed input and output. Where an artifact runs is part of its responsibility, not an incidental detail.
+Splitting a large file does not reduce context when every part is still loaded at startup.
 
-**Prefer:**
-- Artifacts describable in one sentence
-- Names that reveal responsibility
-- Explicit handoffs between decision and execution
-- Choosing where work runs deliberately, not by habit
+### 3. Describe Outcomes And Boundaries
 
-**Avoid:**
-- Mixed policy, procedure, and reference content
-- Work units that decide their own routing
-- Broad catch-all files
-- Treating an in-context helper and an isolated actor as the same kind of thing
+Tell the model what must be true, what must not happen, and what evidence matters. Leave local reasoning and
+implementation choices to the model unless a project-specific fact or risk requires a constraint.
 
----
+Methodologies such as SDD or TDD express the user's preferred direction and invariants. They are not invitations to
+teach the model a generic step-by-step reasoning script.
 
-### 4. One Owner Per Concern
+### 4. Earn Every Artifact
 
-Every rule, constraint, and definition has exactly one authoritative home. Before creating something new, find out whether an existing owner already covers it.
+Create a skill, workflow, agent, contract, context file, or adapter only for a present need.
 
-**Prefer:**
-- A single owner for each rule, referenced from elsewhere
-- Auditing existing sources before adding another
-- Extending the rightful owner when it still fits
+- repeated task-scoped policy can justify a skill
+- repeated ordered work can justify a workflow
+- a recurring responsibility that materially benefits from fresh context can justify an agent
+- a structured boundary that consumers must validate can justify a contract
 
-**Avoid:**
-- Local copies of shared conventions
-- Parallel or competing authorities for the same concern
-- Creating a cleaner-looking duplicate
+Do not create empty layers or speculative capability libraries.
 
----
+### 5. Use Native Capabilities
 
-## Control And Safety
+Prefer each selected tool's current instruction discovery, skills, agents, permissions, hooks, and configuration
+mechanisms. Portability means preserving the same intent across native representations, not forcing every tool into one
+fictional runtime.
 
-### 5. Make Behavior Explicit
+### 6. Enforce What Must Never Drift
 
-Assumptions, success criteria, uncertainty, and stopping conditions should be stated rather than inferred. Critical decision points must be able to actually stop work until the required condition exists.
+Prompt instructions influence behavior; they do not guarantee it. Put non-negotiable restrictions and repeatable
+validation in permissions, hooks, schemas, tests, linters, or other deterministic controls when the selected tool makes
+that possible.
 
-**Prefer:**
-- Declared assumptions and visible success criteria
-- Output artifacts that prove gated steps happened
-- Ambiguity surfaced before action
-- Blocking conditions with clear next steps when they fire
+### 7. Preserve User Authority
 
-**Avoid:**
-- Soft language for hard requirements
-- Rules that only advise where they should gate
-- Critical checks that can be skipped silently
-- Compliance that depends on private memory instead of transcript evidence
+Ask before destructive, external, costly, or authority-expanding actions. Consent is scoped to the action approved.
+
+Do not infer permission to commit, push, deploy, publish, contact people, change production, expose data, or restructure
+the user's landscape.
+
+### 8. Retest The Harness
+
+Models and tools change. After a significant change, or at least every six months, compare the active landscape with a
+fresh minimal baseline on representative work. Preserve durable context and proven guardrails; keep model-compensation
+scaffolding only while current evidence shows that it still helps.
+
+The framework is maintained by subtraction as well as addition.
 
 ---
 
-### 6. Ask Before You Cut
+## Final Test
 
-Changes that can lose work, disrupt users, or reshape authority require explicit consent.
+A proper landscape lets the user describe the work in ordinary language while the system quietly supplies relevant
+context, policy, procedure, isolation, contracts, and enforcement.
 
-**Prefer:**
-- Naming the risk before acting
-- Explaining the intended safe outcome
-- Treating consent as a requirement, scoped to what was approved
-
-**Avoid:**
-- Proceeding because a change seems obvious
-- Hiding risk inside a larger change
-- Treating approval for one change as approval for related changes
+If operating the landscape becomes a second job, simplify it.

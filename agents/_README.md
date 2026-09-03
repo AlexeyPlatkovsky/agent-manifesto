@@ -1,32 +1,21 @@
 ---
-version: 2.10.0
+version: 3.0.0
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/agents/_README.md
 ---
 
 # Agents
 
-This directory contains canonical framework agent templates.
+Agents in this directory are framework templates for recurring responsibilities that materially benefit from fresh
+context.
 
-Agent templates are framework inputs. They are copied into generated project instruction systems only when their structured frontmatter applies.
-This file is an index and is not an agent template or derivation input.
+Generated landscapes adapt a template to the selected tool's native format and paths. The adapted agent must preserve
+the responsibility, authority boundary, stopping conditions, isolation rationale, and output contract without
+referencing this framework repository.
 
-## How To Use Agent Templates
+Do not install an agent merely because a tool supports subagents. A one-off isolated task can use the tool's built-in
+subagent without creating a permanent project artifact.
 
-- Treat each agent file as the canonical source for that specialized role at framework design time.
-- Use `conventions/framework-metadata.md` for metadata rules.
-- Use `conventions/capability-derivation.md` for derivation and copied-agent rules.
+## Universal Agent
 
-## Current Agents
-
-### `artifact-acceptance-tester.md`
-
-Scenario-based acceptance test agent for new or materially changed instruction artifacts before they are accepted.
-
-### `instruction-evaluator.md`
-
-Read-only review agent for instruction artifacts before they are accepted into a project instruction system.
-
-### `test-system-kit/`
-
-A project- and tech-agnostic bundle for building a standing drift-test system for a project's AI capabilities. Contains the `test-system-builder` skill, the `test-system-auditor` agent, the scenario card schema convention, and the runner-agent template. See `test-system-kit/README.md`.
+`instruction-evaluator.md` provides an independent review of a new or materially adjusted AI landscape.

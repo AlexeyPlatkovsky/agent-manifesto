@@ -1,0 +1,73 @@
+version: 3.0.0
+name: tool-adoption
+description: Integrate an external tool without importing its demos, stale scaffolding, or competing instruction system.
+applies_when:
+  - the user wants to adopt an external tool, library, plugin, or instruction bundle
+inputs:
+  - MANIFEST.md
+  - IMPLEMENTATION.md
+steps:
+  - id: inspect-host
+    goal: Inspect the host project's architecture, authoritative documentation, existing landscape, and working-tree state.
+    on_failure: stop
+
+  - id: inspect-tool
+    goal: >-
+      Verify the tool's current official documentation and inventory its runtime surface, configuration, dependencies,
+      examples, generated files, skills, workflows, agents, contracts, hooks, and permissions.
+    on_failure: stop
+
+  - id: reconcile
+    needs: [inspect-host, inspect-tool]
+    goal: >-
+      Classify each tool artifact as runtime dependency, native adapter, reusable policy, procedure, responsibility,
+      contract, reference context, demo, or discard. Identify conflicts and migration risks without modifying files.
+    on_failure: stop
+
+  - id: clarify
+    needs: [reconcile]
+    goal: Resolve only integration choices that have materially different outcomes.
+    skills: [brainstorm]
+    when: meaningful alternatives remain
+    on_failure: ask_user
+
+  - id: propose
+    needs: [clarify]
+    goal: >-
+      Present the smallest integration plan, including exact retained and removed assets, native configuration,
+      dependencies, validation, documentation effects, and rollback considerations.
+    on_failure: stop
+
+  - id: approve
+    needs: [propose]
+    goal: Obtain explicit approval for dependencies, file changes, cleanup, migrations, and external actions.
+    approval: required
+    on_failure: stop
+
+  - id: integrate
+    needs: [approve]
+    goal: Implement only the approved runtime integration and landscape changes.
+    on_failure: stop
+
+  - id: validate
+    needs: [integrate]
+    goal: >-
+      Run the host project's relevant checks, validate landscape artifacts and references, confirm demos and foreign
+      orchestration were handled as approved, and report unavailable verification.
+    on_failure: stop
+
+  - id: evaluate
+    needs: [validate]
+    goal: Independently evaluate changed instruction artifacts and integration boundaries in fresh context.
+    agent: instruction-evaluator
+    output_contract: instruction-evaluation
+    retries: 1
+    on_failure: stop
+
+  - id: finish
+    needs: [evaluate]
+    goal: >-
+      Align the project's authoritative documentation with the adopted surface, then summarize that surface, the
+      evidence, the exclusions, and the residual risks.
+    skills: [documentation-maintenance]
+    on_failure: stop

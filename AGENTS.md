@@ -1,27 +1,31 @@
-# Maintain Version Frontmatter
+# Maintain Framework Version
 
 Use this skill whenever a task changes the `agent-manifest` framework itself.
 
 This file is not part of the Agent Manifesto framework. Its only purpose is to maintain correct project version bumping.
-Do not treat it as a framework source when discussing or designing framework changes. Apply it only when a task requires a project version bump.
+Do not treat it as a framework source when discussing or designing framework changes. Apply it only when a task requires
+a project version bump.
 
-This repository is versioned as a single unit. The following files must always share the same `version` value in YAML frontmatter:
+This repository is versioned as a single unit. The following files must always share the same framework version:
 - `MANIFEST.md`
 - `IMPLEMENTATION.md`
 - `README.md`
-- `conventions/*.md`
-- `00_project_profile.md`
-- `01_initial_composition.md`
-- `02_review.md`
-- `03_capability_expansion.md`
-- `04_tool_adoption.md`
-- `protocols/*.md`
+- `workflows/*.yml`
+- `skills/*/SKILL.md`
 - `agents/*.md`
+- `contracts/*.schema.json`
+
+Markdown sources store the value in YAML frontmatter as `version`. Workflow YAML stores it as the top-level `version`.
+JSON Schema contracts store it as `x-framework-version`.
+
+No other file may hardcode the framework version. `MANIFEST.md` is the single source of truth: `scripts/validate-framework.rb`
+reads the expected version from it, and `contracts/workflow.schema.json` constrains `version` with a major-version
+pattern rather than an exact value. A bump that crosses a major version must widen that pattern.
 
 ## Rules
 
-1. Read the frontmatter of all files before editing any of them.
-2. Keep the `version` field identical across all files at all times.
+1. Read the version metadata of all files before editing any of them.
+2. Keep the framework version identical across all files at all times.
 3. When a framework refactor changes the version, update all files in the same patch.
 4. Use semantic versioning: `MAJOR.MINOR.PATCH`.
 
@@ -35,8 +39,8 @@ This repository is versioned as a single unit. The following files must always s
 
 Before declaring the task complete:
 
-1. Re-read the frontmatter in all files.
-2. Confirm the `version` values are identical.
+1. Run `ruby scripts/validate-framework.rb`.
+2. Confirm the framework version values are identical across all files.
 3. Confirm the bump level matches the kind of change made.
 4. If any file was missed, fix it before reporting completion.
 
@@ -46,6 +50,8 @@ Commit messages must describe the project-level change (what was changed, added,
 
 Do not frame commits around the version bump itself:
 - avoid titles like `Bump version to X`, `Version sync`, `Patch bump for Y`
-- prefer titles that describe the substantive change (`Rework README as how-to guide`, `Add README to versioned file set`)
+- prefer titles that describe the substantive change (`Rework README as how-to guide`, `Add README to versioned file
+  set`)
 
-The version change is visible in the diff and the release tag — the commit message should explain the change that justified the bump, not restate the bump.
+The version change is visible in the diff and the release tag — the commit message should explain the change that
+justified the bump, not restate the bump.

@@ -8,14 +8,11 @@ on:
       - MANIFEST.md
       - IMPLEMENTATION.md
       - README.md
-      - 00_project_profile.md
-      - 01_initial_composition.md
-      - 02_review.md
-      - 03_capability_expansion.md
-      - 04_tool_adoption.md
-      - conventions/*.md
-      - protocols/*.md
+      - workflows/**
+      - skills/**
       - agents/**
+      - contracts/**
+      - scripts/**
 
 permissions:
   contents: write
@@ -91,14 +88,11 @@ jobs:
             README.md
             MANIFEST.md
             IMPLEMENTATION.md
-            00_project_profile.md
-            01_initial_composition.md
-            02_review.md
-            03_capability_expansion.md
-            04_tool_adoption.md
-            conventions
-            protocols
+            workflows
+            skills
             agents
+            contracts
+            scripts
           )
 
           for path in "${archive_paths[@]}"; do

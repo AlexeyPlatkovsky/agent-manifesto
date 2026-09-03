@@ -1,140 +1,132 @@
 ---
-version: 2.10.0
+version: 3.0.0
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/README.md
 ---
 
-# AI Instruction Framework
+# Agent Manifesto
 
-The Agent Manifesto is a portable, tool-agnostic framework for organizing AI instruction systems. `MANIFEST.md` defines the framework's values and principles; `IMPLEMENTATION.md` defines the practices that apply them. Together they keep instruction systems minimal, explicit, and scalable across single-tool and multi-tool environments.
+Agent Manifesto helps you create, review, or adjust a lightweight AI landscape for tools such as Claude Code, Codex,
+Gemini CLI, and other capable agents.
 
----
+It supplies what the model cannot know: your context, preferences, authority boundaries, recurring procedures, and
+structured interfaces. It leaves problem-solving and implementation reasoning to the model.
 
-## How To Use
+## Landscape Model
 
-The framework is delivered as a set of stages. A stage is any `NN_name.md` file. Each stage is a self-contained entry point with a declared required context list — attach or reference it in your AI tool and ask the tool to run it. The exact syntax depends on your tool (`@file` in Claude Code, Cursor, and most modern agents), but the idea is the same across all of them:
+- facts and preferences belong to **context**
+- universal authority limits belong to the **root contract**
+- task-scoped policies belong to **skills**
+- procedures belong to **workflows**
+- fresh-context responsibilities belong to **agents**
+- data shapes belong to **contracts**
+- reasoning belongs to the **model**
+- hard guarantees belong to **deterministic enforcement**
 
-> `run @<stage-file>.md`
+## Quick Start
 
-Run `00_project_profile.md` before any other stage. After that, pick the stage that matches your current situation.
+Point your AI tool at the workflow you want. Each workflow declares the framework sources it needs in its own
+`inputs`, so you do not have to attach them by hand.
 
----
+### Create or adjust a landscape
 
-### Stage 00 — Profile The Project
-
-**When:** before any other framework stage, or when the user's role, duties, tools, or project assumptions changed.
-
-**Run:**
-```
-run @00_project_profile.md
-```
-
-**What happens:**
-- The AI captures the project purpose, user role, recurring duties, and AI tool surface.
-- It identifies authoritative local sources, domain vocabulary, and quality expectations.
-- It optionally researches current best practices when local context is insufficient and the user approves.
-
-**Outcome:** `.ai/docs/project_specification.md`, the reusable profile required by every later stage.
-
----
-
-### Stage 01 — Compose The Initial System
-
-**When:** starting from scratch, or refactoring an existing messy instruction system.
-
-**Run:**
-```
-run @01_initial_composition.md
+```text
+Run @workflows/setup.yml
 ```
 
-**What happens:**
-- The AI inventories your repository.
-- It reads `.ai/docs/project_specification.md`.
-- It asks only unresolved design questions needed for composition.
-- It derives required capabilities from protocol metadata.
-- It derives required agents from agent template metadata.
-- It makes tool-specific adapters explicit enough to enforce the canonical root contract.
-- It checks repeated software work such as feature implementation, code review, and code refactoring as pipeline candidates when their steps differ.
-- It preserves good existing capability names where they already satisfy the framework.
-- It asks before any risky change (splits, moves, merges, deletions, contract choices).
+The setup workflow:
 
-**Outcome:** the smallest coherent instruction system that fully aligns with `MANIFEST.md` and `IMPLEMENTATION.md`.
+1. inspects the repository and any existing AI landscape
+2. infers what it can before asking questions
+3. asks only for missing context and meaningful preferences
+4. proposes the smallest useful landscape
+5. waits for approval before changing files
+6. evaluates the result in fresh context
 
----
+It supports both a new project and an existing landscape.
 
-### Stage 02 — Review For Compliance
+### Review an existing landscape
 
-**When:** after significant instruction changes, or when you want a compliance check on an existing system.
-
-**Run:**
-```
-run @02_review.md
+```text
+Run @workflows/review.yml
 ```
 
-**What happens:**
-- Validates the correct root-contract model.
-- Checks routing gates, duplication, and responsibility boundaries.
-- Verifies protocol coverage from structured metadata.
-- Verifies required agent coverage from structured metadata.
-- Produces a minimal fix plan before any implementation.
+Use this after significant instruction changes, after a model or tool upgrade, or as a six-month scaffolding reset.
 
-**Outcome:** a compliance verdict and minimum fix plan; fixes are implemented only when explicitly requested.
+### Add or change a capability
 
----
-
-### Stage 03 — Expand Capabilities
-
-**When:** a valid baseline already exists and the team has real recurring workflows to encode.
-
-**Run:**
-```
-run @03_capability_expansion.md
+```text
+Run @workflows/extend.yml
 ```
 
-**What happens:**
-- Learns recurring work directly from you.
-- Proposes new skills, pipelines, agents, conventions, and docs grounded in actual usage.
-- Verifies present mandatory protocol triggers and mandatory agent-template triggers before optional additions.
+Use this for one bounded addition or change to context, a skill, workflow, agent, contract, or enforcement mechanism.
 
-**Outcome:** an instruction system that reflects how your team actually works, without speculative abstractions.
+### Adopt an external tool
 
----
-
-### Stage 04 — Adopt External Tools
-
-**When:** adopting a specific external tool, library, or framework into an existing instruction system after a valid baseline exists.
-
-Run Stage 03 first if the tool introduces new capability triggers.
-
-**Run:**
-```
-run @04_tool_adoption.md
+```text
+Run @workflows/adopt-tool.yml
 ```
 
-**What happens:**
-- Inventories the tool's runtime surface, demos, and foreign instruction artifacts.
-- Reconciles foreign capabilities into standalone project artifacts, wrapped libraries, references, or discards.
-- Enforces cleanup of demo content and broken imports before completion.
+This separates the tool's real runtime value from demos, foreign scaffolding, and conflicting instructions.
 
-**Outcome:** the external tool is cleanly integrated, with no leftover demo noise or conflicting instructions.
+## What Setup Learns
 
----
+Only applicable topics are discussed:
 
-## What This Repository Contains
+- the user's role, business, audience, and recurring work
+- project purpose and authoritative sources
+- personal versus team-shared scope
+- AI tools in actual use
+- output and voice preferences
+- banned language
+- preferred methodologies such as SDD or TDD
+- testing and quality expectations
+- actions the AI may never take or must ask about
 
-- `MANIFEST.md` — framework values and principles
-- `IMPLEMENTATION.md` — framework mechanics and operational rules
-- `conventions/*.md` — shared framework standards used by multiple framework artifacts
-- `protocols/_README.md` — protocol index
-- `protocols/*.md` — canonical protocol definitions used by stages
-- `agents/*.md` — canonical agent templates copied into generated landscapes when their metadata applies (`agents/_README.md` is the index)
-- `00_project_profile.md` — creates or updates the reusable project specification
-- `01_initial_composition.md` — builds or adjusts a baseline instruction system
-- `02_review.md` — audits an instruction system against the framework
-- `03_capability_expansion.md` — expands a correct baseline with new capabilities
-- `04_tool_adoption.md` — adopts an external tool or framework into an existing instruction system
+The framework does not ask a software team for a brand voice unless their work requires one.
 
----
+## Framework Contents
+
+- `MANIFEST.md` — values and principles
+- `IMPLEMENTATION.md` — artifact boundaries and composition rules
+- `workflows/*.yml` — setup, review, extension, and adoption procedures
+- `skills/*/SKILL.md` — reusable task-scoped policies
+- `agents/*.md` — fresh-context responsibility templates
+- `contracts/*.schema.json` — machine-readable workflow and result shapes
+- `scripts/validate-framework.rb` — deterministic check over all of the above
+
+`AGENTS.md` is not a framework source. It governs version bumping inside this repository only, and is not copied into a
+generated landscape.
+
+## Migration From 2.x
+
+Version 3.0 is a breaking simplification:
+
+- numbered Markdown stages become YAML workflows
+- pipelines become workflows
+- protocol derivation and the generated project-convention layer are removed
+- the mandatory manager and task-complete capability are removed
+- conversational handoff artifacts are replaced by contracts only where structured data is actually needed
+- instruction evaluation remains universal, but scenario-test machinery is no longer generated by default
+- the project profile becomes ordinary context created during setup rather than a mandatory preliminary stage
+
+Review existing 2.x landscapes with `workflows/review.yml` before migrating. Moving or deleting existing artifacts still
+requires explicit approval.
+
+## Model And Tool Changes
+
+Start model migrations from the smallest prompt that preserves the user's real contract. Retest old instructions rather
+than assuming they remain helpful. Durable context stays; model-compensation scaffolding must continue to earn its
+place.
+
+## Validate The Framework
+
+```text
+ruby scripts/validate-framework.rb
+```
+
+The validator uses Ruby's standard library. It checks synchronized versions, workflow shape, references, and dependency
+cycles without installing project dependencies.
 
 ## License
 
