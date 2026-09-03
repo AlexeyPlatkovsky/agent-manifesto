@@ -53,7 +53,7 @@ Or clone the repository without installing; the workflows also work directly fro
 
 ### Then ask for what you need
 
-Describe the work normally and the `agent-manifesto` skill routes it to the right procedure. To choose one directly,
+Describe the work normally and the `ai-landscape` skill routes it to the right procedure. To choose one directly,
 point your tool at its file.
 
 | I want to... | Ask for | Or run |
