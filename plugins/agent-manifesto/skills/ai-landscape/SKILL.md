@@ -5,7 +5,7 @@ metadata:
   version: 3.0.0
 ---
 
-# Ai Landscape
+# AI Landscape
 
 ## Apply When
 

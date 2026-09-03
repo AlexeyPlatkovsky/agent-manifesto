@@ -78,14 +78,14 @@ policies, and boundaries before deletion.
 
 Claude Code exposes three skills and one custom agent; Codex exposes the three skills and, when possible, uses a fresh
 session for independent evaluation. Full instructions load on invoke. For plugin version 3.0.0, Claude Code reports
-about 132 tokens of discovery metadata per session:
+about 189 tokens of discovery metadata per session:
 
 | Component | Purpose | Always on | On invoke |
 | --- | --- | ---: | ---: |
-| `agent-manifesto` | Routes requests to workflows | ~40 | ~890 |
-| `brainstorm` | Resolves decisions with meaningful alternatives | ~30 | ~240 |
-| `documentation-maintenance` | Aligns docs with completed changes | ~30 | ~260 |
-| `instruction-evaluator` (Claude only) | Reviews landscapes read-only against a schema | ~30 | ~680 |
+| `ai-landscape` | Routes requests to workflows | ~60 | ~1200 |
+| `brainstorm` | Resolves decisions with meaningful alternatives | ~40 | ~320 |
+| `documentation-maintenance` | Aligns docs with completed changes | ~50 | ~350 |
+| `instruction-evaluator` (Claude only) | Reviews landscapes read-only against a schema | ~40 | ~910 |
 
 The plugin adds no hooks, MCP servers, or LSP servers. Codex reports when independent evaluation is unavailable.
 

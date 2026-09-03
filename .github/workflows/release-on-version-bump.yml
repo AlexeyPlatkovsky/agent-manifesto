@@ -98,8 +98,8 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-artifacts
-          prefix="agent-manifest-${{ steps.versions.outputs.current_version }}/"
-          archive_base="release-artifacts/agent-manifest-${{ steps.versions.outputs.current_version }}"
+          prefix="agent-manifesto-${{ steps.versions.outputs.current_version }}/"
+          archive_base="release-artifacts/agent-manifesto-${{ steps.versions.outputs.current_version }}"
 
           archive_paths=(
             README.md
@@ -153,5 +153,5 @@ jobs:
           tag_name: ${{ steps.decide.outputs.tag }}
           body_path: release-notes.md
           files: |
-            release-artifacts/agent-manifest-${{ steps.versions.outputs.current_version }}.tar.gz
-            release-artifacts/agent-manifest-${{ steps.versions.outputs.current_version }}.zip
+            release-artifacts/agent-manifesto-${{ steps.versions.outputs.current_version }}.tar.gz
+            release-artifacts/agent-manifesto-${{ steps.versions.outputs.current_version }}.zip

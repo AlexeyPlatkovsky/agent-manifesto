@@ -98,7 +98,7 @@ def run_case(case: dict, claude: str, model: str | None, artifacts: Path) -> int
         common.extend(["--model", model])
 
     run_prompt = (
-        f"Use the /agent-manifesto:agent-manifesto skill from the supplied plugin. "
+        f"Use the /agent-manifesto:ai-landscape skill from the supplied plugin. "
         f"Follow {case['workflow']} for this request: {case['prompt']} "
         "This is the first user turn: do not invent approval or silently skip a required question. "
         "Work only in the current fixture and respond exactly as you would to its user."
