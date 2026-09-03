@@ -1,0 +1,22 @@
+{
+  "name": "agent-manifesto",
+  "displayName": "Agent Manifesto",
+  "version": "3.0.0",
+  "description": "Define the system your AI works in: context, policies, procedures, responsibilities, contracts, and enforcement — instead of teaching the model how to think.",
+  "author": {
+    "name": "Alexey Platkovsky",
+    "url": "https://github.com/AlexeyPlatkovsky"
+  },
+  "homepage": "https://github.com/AlexeyPlatkovsky/agent-manifesto",
+  "repository": "https://github.com/AlexeyPlatkovsky/agent-manifesto",
+  "license": "CC-BY-4.0",
+  "keywords": [
+    "instructions",
+    "landscape",
+    "skills",
+    "workflows",
+    "agents",
+    "governance"
+  ],
+  "skills": "./skills/"
+}

@@ -1,0 +1,33 @@
+{
+  "name": "agent-manifesto",
+  "version": "3.0.0",
+  "description": "Define the system your AI works in: context, policies, procedures, responsibilities, contracts, and enforcement — instead of teaching the model how to think.",
+  "author": {
+    "name": "Alexey Platkovsky",
+    "url": "https://github.com/AlexeyPlatkovsky"
+  },
+  "homepage": "https://github.com/AlexeyPlatkovsky/agent-manifesto",
+  "repository": "https://github.com/AlexeyPlatkovsky/agent-manifesto",
+  "license": "CC-BY-4.0",
+  "keywords": [
+    "instructions",
+    "landscape",
+    "skills",
+    "workflows",
+    "governance"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Agent Manifesto",
+    "shortDescription": "Build and maintain minimal AI instruction landscapes.",
+    "longDescription": "Create, review, extend, adopt tools into, or retire a lightweight landscape of context, policy, procedures, responsibilities, contracts, and enforcement.",
+    "developerName": "Alexey Platkovsky",
+    "category": "Developer Tools",
+    "capabilities": ["Interactive"],
+    "defaultPrompt": [
+      "Set up a minimal AI landscape for this project.",
+      "Review this project's AI instructions.",
+      "Adopt this tool without importing its scaffolding."
+    ]
+  }
+}

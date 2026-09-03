@@ -1,0 +1,74 @@
+version: 3.0.0
+name: landscape-review
+description: Review an AI landscape for usefulness, clarity, current-model fit, and unnecessary scaffolding.
+applies_when:
+  - the user asks for an instruction-system review
+  - the selected model or AI tool changed materially
+  - the landscape is due for periodic maintenance
+inputs:
+  - MANIFEST.md
+  - IMPLEMENTATION.md
+steps:
+  - id: inventory
+    goal: >-
+      Locate every applicable root file, context source, skill, workflow, agent, contract, native configuration, hook,
+      permission, and generated artifact. Determine precedence and actual discovery behavior.
+    on_failure: stop
+
+  - id: establish-baseline
+    needs: [inventory]
+    goal: >-
+      Identify representative work and the smallest viable harness against which temporary scaffolding can be judged.
+      Do not remove the active landscape merely to create the baseline; use a safe copy, fixture, or evidence-backed
+      comparison plan.
+    on_failure: ask_user
+
+  - id: evaluate
+    needs: [inventory, establish-baseline]
+    goal: >-
+      Evaluate the landscape independently, including context value, conflicts, artifact boundaries, native
+      discoverability, contract validity, deterministic enforcement, and instructions a capable current model may no
+      longer need.
+    agent: instruction-evaluator
+    output_contract: instruction-evaluation
+    on_failure: stop
+
+  - id: report
+    needs: [evaluate]
+    goal: >-
+      Present findings by impact, including a clear no-change conclusion when no actionable finding exists. Distinguish
+      durable context, policy, authority boundaries, and temporary scaffolding. State what was not verified.
+    on_failure: stop
+
+  - id: propose
+    needs: [report]
+    goal: >-
+      Propose the minimum useful file effects for actionable findings the user wants fixed. Snapshot pre-existing
+      working-tree changes, and lock the approved content hash and effects of every authority-expanding operation.
+    when: actionable findings exist and the user requests or chooses changes
+    output_contract: change-proposal
+    on_failure: stop
+
+  - id: approve
+    needs: [propose]
+    goal: Obtain explicit approval before applying any review finding.
+    when: a change proposal was produced
+    input_contract: change-proposal
+    approval: required
+    on_failure: stop
+
+  - id: apply
+    needs: [approve]
+    goal: Apply only approved changes without expanding the landscape.
+    when: the change proposal was approved
+    input_contract: change-proposal
+    on_failure: stop
+
+  - id: verify
+    needs: [apply]
+    goal: >-
+      Re-run applicable deterministic checks, confirm the diff touches only paths named in the approved proposal, and
+      report the final state, remaining findings, and unavailable checks.
+    when: changes were applied
+    input_contract: change-proposal
+    on_failure: stop

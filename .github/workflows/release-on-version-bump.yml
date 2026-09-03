@@ -5,17 +5,10 @@ on:
     branches:
       - main
     paths:
-      - MANIFEST.md
-      - IMPLEMENTATION.md
       - README.md
-      - 00_project_profile.md
-      - 01_initial_composition.md
-      - 02_review.md
-      - 03_capability_expansion.md
-      - 04_tool_adoption.md
-      - conventions/*.md
-      - protocols/*.md
-      - agents/**
+      - plugins/**
+      - .claude-plugin/**
+      - .agents/**
 
 permissions:
   contents: write
@@ -31,24 +24,24 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
-      - name: Read current and previous versions
+      - name: Read current and released versions
         id: versions
         shell: bash
         run: |
-          current_version=$(awk '/^version:/ {print $2}' MANIFEST.md)
+          set -euo pipefail
+          current_version=$(awk '/^version:/ {print $2}' plugins/agent-manifesto/MANIFEST.md)
+          latest_tag=$(git tag --list 'v*' --sort=-v:refname | head -n1 || true)
+          released_version=""
 
-          if git rev-parse HEAD^ >/dev/null 2>&1; then
-            git show HEAD^:MANIFEST.md > /tmp/prev_manifest.md 2>/dev/null || true
-          fi
-
-          if [ -f /tmp/prev_manifest.md ]; then
-            previous_version=$(awk '/^version:/ {print $2}' /tmp/prev_manifest.md)
-          else
-            previous_version=""
+          if [ -n "$latest_tag" ]; then
+            if git show "$latest_tag":plugins/agent-manifesto/MANIFEST.md > /tmp/released_manifest.md 2>/dev/null || \
+               git show "$latest_tag":MANIFEST.md > /tmp/released_manifest.md 2>/dev/null; then
+              released_version=$(awk '/^version:/ {print $2}' /tmp/released_manifest.md)
+            fi
           fi
 
           echo "current_version=$current_version" >> "$GITHUB_OUTPUT"
-          echo "previous_version=$previous_version" >> "$GITHUB_OUTPUT"
+          echo "released_version=$released_version" >> "$GITHUB_OUTPUT"
 
       - name: Decide whether to release
         id: decide
@@ -56,27 +49,48 @@ jobs:
         run: |
           set -euo pipefail
           current="${{ steps.versions.outputs.current_version }}"
-          previous="${{ steps.versions.outputs.previous_version }}"
+          released="${{ steps.versions.outputs.released_version }}"
 
           if [ -z "$current" ]; then
             echo "release=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          # First release if no previous version exists
-          if [ -z "$previous" ]; then
+          # First release if no released manifest exists
+          if [ -z "$released" ]; then
             echo "release=true" >> "$GITHUB_OUTPUT"
             echo "tag=v$current" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
           release=false
-          if [ "$current" != "$previous" ] && [ "$(printf '%s\n%s\n' "$previous" "$current" | sort -V | tail -n1)" = "$current" ]; then
+          if [ "$current" != "$released" ] && [ "$(printf '%s\n%s\n' "$released" "$current" | sort -V | tail -n1)" = "$current" ]; then
             release=true
           fi
 
           echo "release=$release" >> "$GITHUB_OUTPUT"
           echo "tag=v$current" >> "$GITHUB_OUTPUT"
+
+      - name: Install Claude Code for behavioral evaluation
+        if: steps.decide.outputs.release == 'true'
+        run: npm install --global @anthropic-ai/claude-code@2.1.259
+
+      - name: Run fresh-session behavioral release gate
+        if: steps.decide.outputs.release == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          test -n "$ANTHROPIC_API_KEY" || { echo "ANTHROPIC_API_KEY is required for the behavioral release gate" >&2; exit 1; }
+          PYTHONDONTWRITEBYTECODE=1 python3 plugins/agent-manifesto/evals/run-live.py \
+            --artifacts behavioral-eval-artifacts
+
+      - name: Upload behavioral evaluation evidence
+        if: always() && steps.decide.outputs.release == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: behavioral-evals-${{ steps.versions.outputs.current_version }}
+          path: behavioral-eval-artifacts/
+          if-no-files-found: error
 
       - name: Prepare curated release assets
         if: steps.decide.outputs.release == 'true'
@@ -84,21 +98,14 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-artifacts
-          prefix="agent-manifest-${{ steps.versions.outputs.current_version }}/"
-          archive_base="release-artifacts/agent-manifest-${{ steps.versions.outputs.current_version }}"
+          prefix="agent-manifesto-${{ steps.versions.outputs.current_version }}/"
+          archive_base="release-artifacts/agent-manifesto-${{ steps.versions.outputs.current_version }}"
 
           archive_paths=(
             README.md
-            MANIFEST.md
-            IMPLEMENTATION.md
-            00_project_profile.md
-            01_initial_composition.md
-            02_review.md
-            03_capability_expansion.md
-            04_tool_adoption.md
-            conventions
-            protocols
-            agents
+            plugins
+            .claude-plugin
+            .agents
           )
 
           for path in "${archive_paths[@]}"; do
@@ -146,21 +153,5 @@ jobs:
           tag_name: ${{ steps.decide.outputs.tag }}
           body_path: release-notes.md
           files: |
-            release-artifacts/agent-manifest-${{ steps.versions.outputs.current_version }}.tar.gz
-            release-artifacts/agent-manifest-${{ steps.versions.outputs.current_version }}.zip
-
-      - name: Notify manifesto-site of new release
-        if: steps.decide.outputs.release == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.SITE_REPO_DISPATCH_TOKEN }}
-          VERSION: ${{ steps.decide.outputs.tag }}
-        run: |
-          curl -fsSL \
-            -X POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${GH_TOKEN}" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            https://api.github.com/repos/AlexeyPlatkovsky/manifesto-site/dispatches \
-            -d "$(jq -nc \
-              --arg version "$VERSION" \
-              '{event_type:"manifesto_release_published", client_payload:{version:$version}}')"
+            release-artifacts/agent-manifesto-${{ steps.versions.outputs.current_version }}.tar.gz
+            release-artifacts/agent-manifesto-${{ steps.versions.outputs.current_version }}.zip

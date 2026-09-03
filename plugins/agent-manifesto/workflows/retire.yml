@@ -1,0 +1,95 @@
+version: 3.0.0
+name: landscape-retirement
+description: Remove a harness the user no longer wants while preserving the durable context and policy inside it.
+applies_when:
+  - the user wants to remove or shrink an AI landscape
+  - a landscape is being replaced by a different framework or tool
+  - a model or tool change made most of the harness unnecessary
+inputs:
+  - MANIFEST.md
+  - IMPLEMENTATION.md
+steps:
+  - id: inventory
+    goal: >-
+      Locate every artifact the landscape owns, including native root files, context sources, skills, workflows, agents,
+      contracts, hooks, permissions, settings, and installed scripts. Distinguish landscape artifacts from the project's
+      own code and documentation.
+    on_failure: stop
+
+  - id: classify
+    needs: [inventory]
+    goal: >-
+      Classify each artifact as durable context, user or project policy, authority boundary, deterministic enforcement,
+      or model-compensation scaffolding. Name the artifacts whose content must survive retirement in some form.
+    on_failure: stop
+
+  - id: confirm-intent
+    needs: [classify]
+    goal: >-
+      Establish how much the user wants removed, where surviving context should live afterwards, and whether any
+      enforcement must stay in place. Resolve the choice when it has materially different outcomes.
+    skills: [brainstorm]
+    on_failure: ask_user
+
+  - id: propose
+    needs: [confirm-intent]
+    goal: >-
+      Present the exact removals, the destination for every surviving fact, policy, and boundary, and the
+      documentation files the removal will touch. State what the project loses, what stops being enforced, and what
+      becomes the user's responsibility again. Snapshot pre-existing changes, and lock the described effects and
+      content hash of every authority-expanding operation.
+    output_contract: change-proposal
+    on_failure: stop
+
+  - id: approve
+    needs: [propose]
+    goal: Obtain explicit approval for every deletion, move, and configuration change.
+    input_contract: change-proposal
+    approval: required
+    on_failure: stop
+
+  - id: preserve
+    needs: [approve]
+    goal: >-
+      Move surviving context, policy, and authority boundaries to their approved destination before anything is
+      deleted, so no approved content is lost if retirement stops partway.
+    input_contract: change-proposal
+    on_failure: stop
+
+  - id: remove
+    needs: [preserve]
+    goal: Remove only the approved artifacts and configuration entries.
+    input_contract: change-proposal
+    on_failure: stop
+
+  - id: document
+    needs: [remove]
+    goal: >-
+      Align authoritative documentation with the removal, editing only documentation paths named in the proposal.
+    skills: [documentation-maintenance]
+    input_contract: change-proposal
+    on_failure: stop
+
+  - id: verify
+    needs: [document]
+    goal: >-
+      Confirm the selected tools start cleanly with no dangling references, that surviving content is discoverable at
+      its new location, approved hashes match, pre-existing changes did not drift, and the diff touches only approved
+      paths.
+    input_contract: change-proposal
+    on_failure: stop
+
+  - id: evaluate
+    needs: [verify]
+    goal: Independently evaluate the surviving landscape and retirement boundaries in fresh context.
+    agent: instruction-evaluator
+    output_contract: instruction-evaluation
+    retries: 1
+    on_failure: stop
+
+  - id: finish
+    needs: [evaluate]
+    goal: >-
+      Summarize what was retired, what survived and where, what is no longer enforced, and how to restore the harness
+      from version control if needed, without changing files.
+    on_failure: stop

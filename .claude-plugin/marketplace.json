@@ -1,0 +1,30 @@
+{
+  "name": "agent-manifesto",
+  "owner": {
+    "name": "Alexey Platkovsky",
+    "url": "https://github.com/AlexeyPlatkovsky"
+  },
+  "description": "Agent Manifesto — a soft harness for capable models.",
+  "plugins": [
+    {
+      "name": "agent-manifesto",
+      "source": "./plugins/agent-manifesto",
+      "version": "3.0.0",
+      "description": "Define the system your AI works in: context, policies, procedures, responsibilities, contracts, and enforcement — instead of teaching the model how to think.",
+      "author": {
+        "name": "Alexey Platkovsky",
+        "url": "https://github.com/AlexeyPlatkovsky"
+      },
+      "homepage": "https://github.com/AlexeyPlatkovsky/agent-manifesto",
+      "repository": "https://github.com/AlexeyPlatkovsky/agent-manifesto",
+      "license": "CC-BY-4.0",
+      "category": "workflow",
+      "tags": [
+        "instructions",
+        "governance",
+        "skills",
+        "workflows"
+      ]
+    }
+  ]
+}

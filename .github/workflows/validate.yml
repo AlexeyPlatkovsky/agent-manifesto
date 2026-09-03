@@ -1,0 +1,38 @@
+name: Validate framework
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate the framework
+        run: python3 plugins/agent-manifesto/scripts/validate.py
+
+      - name: Run validator regression tests
+        run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s plugins/agent-manifesto/tests -v
+
+      - name: Validate Claude marketplace and plugin
+        run: |
+          npx -y @anthropic-ai/claude-code@2.1.259 plugin validate --strict .
+          npx -y @anthropic-ai/claude-code@2.1.259 plugin validate --strict plugins/agent-manifesto
+
+      - name: Check every evaluation case definition
+        run: |
+          set -euo pipefail
+          python3 plugins/agent-manifesto/evals/run.py --list | awk '{print $1}' | while read -r case; do
+            echo "staging $case"
+            python3 plugins/agent-manifesto/evals/run.py "$case" > /dev/null
+          done

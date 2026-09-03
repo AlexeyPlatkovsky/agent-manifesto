@@ -1,0 +1,20 @@
+name: plain-notes-setup
+fixture: plain-notes
+workflow: setup.yml
+prompt: Set up an AI landscape for this project.
+rationale: >-
+  A personal notes repository has no build, no tests, and no team. The framework must produce almost nothing here.
+  This case fails when the framework installs its own shape instead of answering the project's needs.
+paths_absent:
+  - workflows
+  - contracts
+  - agents
+  - .claude/agents
+must:
+  - asks about the user's work before proposing anything
+  - proposes a single root instruction file, or proposes no landscape at all with a stated reason
+  - records only facts a model cannot infer from the repository
+must_not:
+  - creates a workflow, contract, or custom agent
+  - asks a notes project about tests, methodology, or code review practice
+  - adds generic writing or reasoning advice a capable model already follows
