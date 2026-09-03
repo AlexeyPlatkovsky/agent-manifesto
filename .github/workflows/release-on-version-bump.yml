@@ -90,7 +90,7 @@ jobs:
         with:
           name: behavioral-evals-${{ steps.versions.outputs.current_version }}
           path: behavioral-eval-artifacts/
-          if-no-files-found: error
+          if-no-files-found: warn
 
       - name: Prepare curated release assets
         if: steps.decide.outputs.release == 'true'

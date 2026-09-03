@@ -97,15 +97,19 @@ def run_case(case: dict, claude: str, model: str | None, artifacts: Path) -> int
     if model:
         common.extend(["--model", model])
 
+    # The skill must be invoked as a leading slash command: --bare resolves skills
+    # only that way, so naming it inside a sentence leaves the plugin unloaded.
     run_prompt = (
-        f"Use the /agent-manifesto:ai-landscape skill from the supplied plugin. "
-        f"Follow {case['workflow']} for this request: {case['prompt']} "
+        f"/agent-manifesto:ai-landscape Follow {case['workflow']} for this request: {case['prompt']} "
         "This is the first user turn: do not invent approval or silently skip a required question. "
         "Work only in the current fixture and respond exactly as you would to its user."
     )
     transcript = invoke(
         common + [
-            "--plugin-dir", str(PLUGIN_ROOT), "--permission-mode", "acceptEdits",
+            # The session runs in the fixture, so the framework sources the skill
+            # reads (MANIFEST.md, IMPLEMENTATION.md, workflows/) need their own grant.
+            "--plugin-dir", str(PLUGIN_ROOT), "--add-dir", str(PLUGIN_ROOT),
+            "--permission-mode", "acceptEdits",
             "--output-format", "text", "-p",
         ],
         run_prompt,

@@ -14,20 +14,28 @@
     "landscape",
     "skills",
     "workflows",
+    "agents",
     "governance"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Agent Manifesto",
     "shortDescription": "Build and maintain minimal AI instruction landscapes.",
-    "longDescription": "Create, review, extend, adopt tools into, or retire a lightweight landscape of context, policy, procedures, responsibilities, contracts, and enforcement.",
+    "longDescription": "Builds and maintains the smallest useful set of AI instructions for a project. Describe what you need in ordinary language and it routes to one of five procedures: set up a landscape from scratch, review an existing one and trim what a capable model no longer needs, add a single skill or workflow or agent, adopt an external tool without importing its demos, or retire the harness while preserving the facts and boundaries inside it. Every procedure inspects the repository before asking questions, proposes a scoped change, and waits for approval; moves, renames, and deletions always require explicit consent.",
     "developerName": "Alexey Platkovsky",
     "category": "Developer Tools",
-    "capabilities": ["Interactive"],
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/AlexeyPlatkovsky/agent-manifesto",
     "defaultPrompt": [
       "Set up a minimal AI landscape for this project.",
       "Review this project's AI instructions.",
-      "Adopt this tool without importing its scaffolding."
+      "Add a skill for reviewing database migrations.",
+      "Adopt this plugin into the project without its demos.",
+      "Retire this AI landscape."
     ]
   }
 }
