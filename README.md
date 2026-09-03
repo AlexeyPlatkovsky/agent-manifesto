@@ -6,28 +6,32 @@ url: https://github.com/AlexeyPlatkovsky/agent-manifest/blob/main/README.md
 
 # Agent Manifesto
 
-Agent Manifesto helps you create, review, adjust, or retire a lightweight AI landscape for tools such as Claude Code,
-Codex, Gemini CLI, and other capable agents.
+**A soft harness for capable models.** Models can read code, search, and reason; they cannot know your business,
+conventions, or authority boundaries. Agent Manifesto supplies the smallest surrounding system—context, policies,
+procedures, and boundaries—for Claude Code, Codex, and other capable agents, maintained by subtraction as well as
+addition.
 
-It supplies what the model cannot know: your context, preferences, authority boundaries, recurring procedures, and
-structured interfaces. It leaves problem-solving and implementation reasoning to the model.
+```mermaid
+flowchart LR
+    B["<b>A prompt that teaches the model</b><br/>how to analyze code<br/>how to search<br/>think step by step<br/>always run the manager protocol"]
+    A["<b>A landscape the model works in</b><br/>context · skills · workflows<br/>agents · contracts<br/>deterministic enforcement<br/><br/><i>reasoning stays with the model</i>"]
+    B ==>|"agent-manifesto"| A
+```
 
-## Landscape Model
+## Contents
 
-- facts and preferences belong to **context**
-- universal authority limits belong to the **root contract**
-- task-scoped policies belong to **skills**
-- procedures belong to **workflows**
-- fresh-context responsibilities belong to **agents**
-- data shapes belong to **contracts**
-- reasoning belongs to the **model**
-- hard guarantees belong to **deterministic enforcement**
+- [How to use it](#how-to-use-it) — install, then the five things it does
+- [What you get](#what-you-get) — the components and what they cost
+- [The idea](#the-idea) — why a landscape instead of a prompt
+- [What setup asks you](#what-setup-asks-you)
+- [Reference](#reference) — layout, validation, evaluation, local development
+- [Migrating from 2.x](#migrating-from-2x)
 
-## Install
+---
 
-Agent Manifesto is packaged as a plugin for both Claude Code and Codex. Installing it gives you the `agent-manifesto`
-skill, the universal `brainstorm` and `documentation-maintenance` skills, and — on Claude Code — the
-`instruction-evaluator` agent.
+## How to use it
+
+### Install
 
 **Claude Code**
 
@@ -43,124 +47,98 @@ codex plugin marketplace add AlexeyPlatkovsky/agent-manifest
 codex plugin add agent-manifesto@agent-manifesto
 ```
 
-Or browse with `/plugins` inside Codex. Start a new session before using it.
+In Codex, you can also browse with `/plugins`. Start a new session before using the plugin.
 
-Codex plugins have no custom-agent component, so `instruction-evaluator` installs on Claude Code only. On Codex the
-framework runs the same independent evaluation in a separate fresh session and says so when it cannot.
+Or clone the repository without installing; the workflows also work directly from their files.
 
-You can also skip installation entirely and clone the repository — the workflows work the same way when their files
-are simply present.
+### Then ask for what you need
 
-### Testing a local checkout
+Describe the work normally and the `agent-manifesto` skill routes it to the right procedure. To choose one directly,
+point your tool at its file.
 
-Both CLIs accept this repository directly as a marketplace, so a change can be installed and inspected without
-publishing anything.
+| I want to... | Ask for | Or run |
+| --- | --- | --- |
+| Set up AI instructions for a project | "set up an AI landscape here" | `workflows/setup.yml` |
+| Trim instructions that no longer earn their place | "review this project's AI instructions" | `workflows/review.yml` |
+| Add one skill, workflow, agent, or rule | "add a migration-review skill" | `workflows/extend.yml` |
+| Adopt an external tool without its demos | "adopt this plugin into the project" | `workflows/adopt-tool.yml` |
+| Remove the harness and keep what mattered | "retire this AI landscape" | `workflows/retire.yml` |
 
-```text
-# Claude Code — note the trailing slash; a bare "." is rejected
-claude plugin marketplace add ./
-claude plugin install agent-manifesto@agent-manifesto --scope local -y
-claude plugin details agent-manifesto      # component inventory and token cost
+Workflow paths are relative to `plugins/agent-manifesto/`; from a clone, run
+`@plugins/agent-manifesto/workflows/setup.yml`.
 
-# Codex
-codex plugin marketplace add .
-codex plugin add agent-manifesto@agent-manifesto
-codex plugin list
-```
+Before changing files, workflows inspect, propose scoped changes, and wait for approval; moves, renames, and deletions
+always require explicit approval. Setup asks only material questions and evaluates approved work in fresh context;
+review is a post-change or six-month reset that may recommend no change; retirement preserves surviving facts,
+policies, and boundaries before deletion.
 
-`claude plugin details` is the check that matters: it reports how many skills and agents actually loaded. A component
-that fails to load is reported as a count of zero, not as an error, so read the inventory rather than trusting the
-install to have succeeded. After editing the repository, run `claude plugin marketplace update agent-manifesto` and
-reinstall — the installed copy is a cache, not a link.
+---
 
-Remove the plugins before the marketplaces — removing a marketplace first orphans its plugin cache:
+## What you get
 
-```text
-claude plugin uninstall agent-manifesto --scope local
-codex plugin remove agent-manifesto@agent-manifesto   # the @marketplace suffix is required
+Claude Code exposes three skills and one custom agent; Codex exposes the three skills and, when possible, uses a fresh
+session for independent evaluation. Full instructions load on invoke. For plugin version 3.0.0, Claude Code reports
+about 175 tokens of discovery metadata per session:
 
-claude plugin marketplace remove agent-manifesto
-codex plugin marketplace remove agent-manifesto
-```
+| Component | Purpose | Always on | On invoke |
+| --- | --- | ---: | ---: |
+| `agent-manifesto` | Routes requests to workflows | ~50 | ~1.2k |
+| `brainstorm` | Resolves decisions with meaningful alternatives | ~40 | ~320 |
+| `documentation-maintenance` | Aligns docs with completed changes | ~50 | ~350 |
+| `instruction-evaluator` (Claude only) | Reviews landscapes read-only against a schema | ~40 | ~830 |
 
-## Quick Start
+The plugin adds no hooks, MCP servers, or LSP servers. Codex reports when independent evaluation is unavailable.
 
-Ask for the work in ordinary language and the `agent-manifesto` skill routes to the right workflow. To run one
-directly, point your AI tool at it. Each workflow declares the framework sources it needs in its own `inputs`, so you
-do not have to attach them by hand.
+---
 
-### Create or adjust a landscape
+## The idea
 
-```text
-Run @plugins/agent-manifesto/workflows/setup.yml
-```
+Every concern has one natural home. An artifact must not absorb a concern that belongs somewhere else.
 
-The setup workflow:
+| Concern | Home |
+| --- | --- |
+| Facts and preferences | context |
+| Universal authority limits | the root contract |
+| Task-scoped policies | skills |
+| Procedures and sequence | workflows |
+| Fresh-context responsibilities | agents |
+| Data shapes | contracts |
+| Hard guarantees | deterministic enforcement |
+| Reasoning | **the model** |
 
-1. inspects the repository and any existing AI landscape
-2. infers what it can before asking questions
-3. asks only for missing context and meaningful preferences
-4. proposes the smallest useful landscape
-5. waits for approval before changing files
-6. evaluates the result in fresh context
+Test each instruction by asking: *would a better model make this unnecessary?* If yes, it is temporary scaffolding and
+needs evidence to stay; if no, it is durable context.
 
-It supports both a new project and an existing landscape.
+Two consequences: **approved scope is data, not prose**—each file-changing workflow emits an approved
+`change-proposal` contract that a script can check against the diff. **Guarantees are mechanical where possible**—the
+Claude evaluator is read-only because its tool grant excludes writing, not because a sentence asks it to behave.
 
-### Review an existing landscape
+Read [MANIFEST.md](plugins/agent-manifesto/MANIFEST.md) for the values and
+[IMPLEMENTATION.md](plugins/agent-manifesto/IMPLEMENTATION.md) for the artifact boundaries.
 
-```text
-Run @plugins/agent-manifesto/workflows/review.yml
-```
+---
 
-Use this after significant instruction changes, after a model or tool upgrade, or as a six-month scaffolding reset.
+## What setup asks you
 
-### Add or change a capability
+Only what applies: a software team is not asked about brand voice, nor a writer about test coverage.
 
-```text
-Run @plugins/agent-manifesto/workflows/extend.yml
-```
-
-Use this for one bounded addition or change to context, a skill, workflow, agent, contract, or enforcement mechanism.
-
-### Adopt an external tool
-
-```text
-Run @plugins/agent-manifesto/workflows/adopt-tool.yml
-```
-
-This separates the tool's real runtime value from demos, foreign scaffolding, and conflicting instructions.
-
-### Retire a landscape
-
-```text
-Run @plugins/agent-manifesto/workflows/retire.yml
-```
-
-Removes a harness you no longer want and keeps what was worth keeping. Durable context, policy, and authority
-boundaries move somewhere you choose before anything is deleted. A framework that is maintained by subtraction owes you
-a way out.
-
-## What Setup Learns
-
-Only applicable topics are discussed:
-
-- the user's role, business, audience, and recurring work
+- your role, business, audience, and recurring work
 - project purpose and authoritative sources
 - personal versus team-shared scope
-- AI tools in actual use
-- output and voice preferences
-- banned language
+- which AI tools you actually use
+- output, voice, and banned language
 - preferred methodologies such as SDD or TDD
 - testing and quality expectations
-- actions the AI may never take or must ask about
+- what the AI may never do, or must ask about first
 
-The framework does not ask a software team for a brand voice unless their work requires one.
+---
 
-## Framework Contents
+## Reference
 
-The repository is a marketplace holding one plugin. Everything the plugin ships lives under
-`plugins/agent-manifesto/`, so an install copies that directory and nothing else — not the git history, not the CI
-configuration.
+### Repository layout
+
+The repository is a marketplace for one plugin. Everything shipped lives under `plugins/agent-manifesto/`, so installs
+exclude the git history and CI configuration.
 
 ```text
 .claude-plugin/marketplace.json     Claude Code catalog
@@ -178,34 +156,10 @@ plugins/agent-manifesto/
 └── evals/                          behavioral cases that test whether the framework earns its place
 ```
 
-`README.md` and `AGENTS.md` stay at the repository root. `AGENTS.md` is not a framework source: it governs version
-bumping inside this repository only, and is not copied into a generated landscape.
+`README.md` and `AGENTS.md` remain at the root. `AGENTS.md` only governs repository version bumps; it is neither a
+framework source nor copied into generated landscapes.
 
-## Migration From 2.x
-
-Version 3.0 is a breaking simplification:
-
-- numbered Markdown stages become YAML workflows
-- pipelines become workflows
-- protocol derivation and the generated project-convention layer are removed
-- the mandatory manager and task-complete capability are removed
-- conversational handoff artifacts are replaced by contracts only where structured data is actually needed
-- instruction evaluation remains universal, but scenario-test machinery is no longer generated by default
-- the project profile becomes ordinary context created during setup rather than a mandatory preliminary stage
-- approved scope becomes a `change-proposal` contract that a script can check against the diff
-- retirement becomes a supported workflow instead of an undocumented manual cleanup
-- the framework ships as a plugin for the Claude Code and Codex marketplaces
-
-Review existing 2.x landscapes with `plugins/agent-manifesto/workflows/review.yml` before migrating. Moving or
-deleting existing artifacts still requires explicit approval.
-
-## Model And Tool Changes
-
-Start model migrations from the smallest prompt that preserves the user's real contract. Retest old instructions rather
-than assuming they remain helpful. Durable context stays; model-compensation scaffolding must continue to earn its
-place.
-
-## Validate The Framework
+### Validating a landscape
 
 ```text
 python3 plugins/agent-manifesto/scripts/validate.py                 # the framework itself
@@ -213,27 +167,77 @@ python3 plugins/agent-manifesto/scripts/validate.py path/to/repo    # a generate
 python3 plugins/agent-manifesto/scripts/validate.py --proposal approved-change.json
 ```
 
-The validator uses only the Python standard library, so it runs inside a generated landscape without installing
-anything. It checks workflow shape, skill and agent frontmatter, references between layers, and dependency cycles. Run
-against this repository it also checks that every framework source carries the same version.
+Using only the standard library, the validator checks workflow shape, skill and agent frontmatter, cross-layer
+references, and dependency cycles. Setup installs it into generated landscapes, keeping the check with the harness.
 
-The setup workflow installs it into the landscapes it creates, so the deterministic check ships with the harness
-rather than staying in this repository.
+With `--proposal`, it also reports files changed outside the approved proposal and private paths staged for commit,
+turning approval into a check rather than a promise.
 
-With `--proposal` it also enforces the approved scope: given the change proposal you approved, it reports any file
-changed without approval and any private path staged for commit. Approval stops being a promise the model makes and
-becomes something you can check.
-
-## Test The Framework Itself
+### Evaluating the framework itself
 
 ```text
 python3 plugins/agent-manifesto/evals/run.py --list
 ```
 
-Three fixture projects with expectations: a repository that should receive almost no landscape, an over-built 2.x
-landscape that should be trimmed without losing its facts, and a healthy landscape the framework must leave alone.
-See [plugins/agent-manifesto/evals/README.md](plugins/agent-manifesto/evals/README.md) for the
-baseline-comparison method.
+Three fixtures cover a notes repository that should receive almost no landscape, an over-built 2.x landscape that
+should be trimmed without losing facts, and a healthy landscape that should remain unchanged. See
+[evals/README.md](plugins/agent-manifesto/evals/README.md) for the comparison method.
+
+### Testing a local checkout
+
+Both CLIs accept this repository as a marketplace, allowing local installation and inspection without publishing.
+
+```text
+# Claude Code — note the trailing slash; a bare "." is rejected
+claude plugin marketplace add ./
+claude plugin install agent-manifesto@agent-manifesto --scope local -y
+claude plugin details agent-manifesto      # component inventory and token cost
+
+# Codex
+codex plugin marketplace add .
+codex plugin add agent-manifesto@agent-manifesto
+codex plugin list
+```
+
+`claude plugin details` shows how many skills and agents loaded. Failures appear as zero counts rather than errors, so
+inspect the inventory. After editing, run `claude plugin marketplace update agent-manifesto` and reinstall; the
+installed copy is a cache, not a link.
+
+Remove plugins before marketplaces to avoid orphaning their caches:
+
+```text
+claude plugin uninstall agent-manifesto --scope local
+codex plugin remove agent-manifesto@agent-manifesto   # the @marketplace suffix is required
+
+claude plugin marketplace remove agent-manifesto
+codex plugin marketplace remove agent-manifesto
+```
+
+### When your model or tools change
+
+Start migrations from the smallest prompt that preserves your contract. Retest old instructions: durable context
+stays, while scaffolding must keep earning its place.
+
+---
+
+## Migrating from 2.x
+
+Version 3.0 is a breaking simplification:
+
+- numbered Markdown stages become YAML workflows, and pipelines become workflows
+- protocol derivation and the generated project-convention layer are removed
+- the mandatory manager and task-complete capability are removed
+- conversational handoffs become contracts only where structured data is actually needed
+- instruction evaluation stays universal; scenario-test machinery is no longer generated by default
+- the project profile becomes ordinary context created during setup, not a mandatory preliminary stage
+- approved scope becomes a `change-proposal` contract that a script can check against the diff
+- retirement becomes a supported workflow instead of an undocumented manual cleanup
+- the framework ships as a plugin for the Claude Code and Codex marketplaces
+
+Before migrating, review 2.x landscapes with `@plugins/agent-manifesto/workflows/review.yml`. Moving or deleting
+artifacts still requires explicit approval.
+
+---
 
 ## License
 
