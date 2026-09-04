@@ -190,18 +190,25 @@ Keep the human-readable policy as short as possible and point to the enforcement
 
 ## Universal Components
 
-Every landscape created or materially adjusted by the framework includes, when the selected tool supports them:
+The framework can add three of its own components to a landscape it creates or materially adjusts, when the selected
+tool supports them and the project earns them:
 
-- the `brainstorm` skill for unresolved decisions with meaningful alternatives
-- the `instruction-evaluator` agent for independent landscape review
+- the `brainstorm` skill, when recurring work involves decisions with meaningful alternatives
+- the `documentation-maintenance` skill, when the project has an authoritative documentation surface and changes to
+  that surface are recurring
+- the `instruction-evaluator` agent, when the landscape is large enough that reviewing it is itself recurring work
 
-Documentation maintenance is included when the project has an authoritative documentation surface and changes to that
-surface are recurring.
+Universal means available to every landscape, not present in every landscape. Principle 4 governs here as everywhere: a
+landscape small enough to read in one sitting earns none of them, and a project with one instruction file has nothing
+for an evaluator to review. Name what each would cost and protect, let the user choose, and do not carry a component in
+merely because the framework ships it.
 
-Universal means broadly useful, not always loaded. These components remain on demand.
+These components stay on demand. None is always loaded.
 
-If the selected tool cannot define a native custom agent, run instruction evaluation in a separate fresh session when
-possible. Otherwise report that independent evaluation was unavailable.
+Independent evaluation of the framework's own work does not depend on installing the agent: a workflow `evaluate` step
+uses the framework's own `instruction-evaluator`. If the selected tool cannot define a native custom agent, run
+instruction evaluation in a separate fresh session when possible. Otherwise report that independent evaluation was
+unavailable.
 
 ---
 

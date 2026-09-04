@@ -61,9 +61,9 @@ steps:
     needs: [approve]
     goal: >-
       Implement only the approved landscape using native tool structures. Keep the root contract small, install the
-      universal components and the landscape validator, preserve established project language, and add no empty or
-      speculative layer. An adapter preserves its source trigger, required inputs, authority, tools, dependencies,
-      stopping conditions, exact machine-consumed vocabulary, and output semantics.
+      landscape validator, add only the universal components the user approved, preserve established project language,
+      and add no empty or speculative layer. An adapter preserves its source trigger, required inputs, authority,
+      tools, dependencies, stopping conditions, exact machine-consumed vocabulary, and output semantics.
     input_contract: change-proposal
     on_failure: stop
 
