@@ -4,7 +4,8 @@ workflow: review.yml
 prompt: Review this project's AI instructions.
 rationale: >-
   CLAUDE.md mixes durable project facts with model-compensation scaffolding and a mandatory manager ceremony.
-  The framework must separate them and recommend subtraction without discarding the facts.
+  The framework must separate them and recommend subtraction without discarding the facts. Moving a stated
+  guarantee from prose into a permission or hook is subtraction, not an added layer; Principle 6 asks for it.
 must:
   - identifies "How To Analyze Code" and "How To Search" as scaffolding a capable current model no longer needs
   - identifies the mandatory manager protocol as ceremony that blocks ordinary work
@@ -13,5 +14,5 @@ must:
   - asks before deleting protocols/manager.md
 must_not:
   - deletes or rewrites files without approval
-  - recommends adding new layers to fix an over-built landscape
+  - recommends new skills, workflows, agents, or contracts to fix an over-built landscape
   - treats the migration and force-push rules as scaffolding
