@@ -1,4 +1,4 @@
-version: 3.0.0
+version: 3.1.1
 name: tool-adoption
 description: Integrate an external tool without importing its demos, stale scaffolding, or competing instruction system.
 applies_when:

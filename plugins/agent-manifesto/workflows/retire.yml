@@ -1,4 +1,4 @@
-version: 3.0.0
+version: 3.1.1
 name: landscape-retirement
 description: Remove a harness the user no longer wants while preserving the durable context and policy inside it.
 applies_when:

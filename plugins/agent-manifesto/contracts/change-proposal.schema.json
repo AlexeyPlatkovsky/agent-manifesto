@@ -3,7 +3,7 @@
   "$id": "https://github.com/AlexeyPlatkovsky/agent-manifesto/blob/main/plugins/agent-manifesto/contracts/change-proposal.schema.json",
   "title": "Landscape change proposal",
   "description": "The exact set of file effects a user is asked to approve, and the boundary every later step is bound by.",
-  "x-framework-version": "3.0.0",
+  "x-framework-version": "3.1.1",
   "type": "object",
   "additionalProperties": false,
   "required": [

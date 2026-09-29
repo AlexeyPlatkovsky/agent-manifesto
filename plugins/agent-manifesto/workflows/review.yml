@@ -1,10 +1,9 @@
-version: 3.0.0
+version: 3.1.1
 name: landscape-review
 description: Review an AI landscape for usefulness, clarity, current-model fit, and unnecessary scaffolding.
 applies_when:
   - the user asks for an instruction-system review
   - the selected model or AI tool changed materially
-  - the landscape is due for periodic maintenance
 inputs:
   - MANIFEST.md
   - IMPLEMENTATION.md
@@ -15,20 +14,12 @@ steps:
       permission, and generated artifact. Determine precedence and actual discovery behavior.
     on_failure: stop
 
-  - id: establish-baseline
+  - id: evaluate
     needs: [inventory]
     goal: >-
-      Identify representative work and the smallest viable harness against which temporary scaffolding can be judged.
-      Do not remove the active landscape merely to create the baseline; use a safe copy, fixture, or evidence-backed
-      comparison plan.
-    on_failure: ask_user
-
-  - id: evaluate
-    needs: [inventory, establish-baseline]
-    goal: >-
       Evaluate the landscape independently, including context value, conflicts, artifact boundaries, native
-      discoverability, contract validity, deterministic enforcement, and instructions a capable current model may no
-      longer need.
+      discoverability, contract validity, deterministic enforcement, and scaffolding that no longer addresses a present
+      need. Preserve necessary project knowledge and authority boundaries.
     agent: instruction-evaluator
     output_contract: instruction-evaluation
     on_failure: stop

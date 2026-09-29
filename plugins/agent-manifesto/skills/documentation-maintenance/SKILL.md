@@ -2,7 +2,7 @@
 name: documentation-maintenance
 description: Align authoritative project documentation with a change to documented behavior or structure.
 metadata:
-  version: 3.0.0
+  version: 3.1.1
 ---
 
 # Documentation Maintenance

@@ -9,7 +9,7 @@
     {
       "name": "agent-manifesto",
       "source": "./plugins/agent-manifesto",
-      "version": "3.0.0",
+      "version": "3.1.1",
       "description": "Define the system your AI works in: context, policies, procedures, responsibilities, contracts, and enforcement — instead of teaching the model how to think.",
       "author": {
         "name": "Alexey Platkovsky",

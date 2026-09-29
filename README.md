@@ -1,5 +1,5 @@
 ---
-version: 3.0.0
+version: 3.1.1
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifesto/blob/main/README.md
 ---
@@ -69,7 +69,7 @@ Workflow paths are relative to `plugins/agent-manifesto/`; from a clone, run
 
 Before changing files, workflows inspect, propose scoped changes, and wait for approval; moves, renames, and deletions
 always require explicit approval. Setup asks only material questions and evaluates approved work in fresh context;
-review is a post-change or six-month reset that may recommend no change; retirement preserves surviving facts,
+review inspects current instructions and may recommend no change; retirement preserves surviving facts,
 policies, and boundaries before deletion.
 
 ---
@@ -77,7 +77,7 @@ policies, and boundaries before deletion.
 ## What you get
 
 Claude Code exposes three skills and one custom agent; Codex exposes the three skills and, when possible, uses a fresh
-session for independent evaluation. Full instructions load on invoke. For plugin version 3.0.0, Claude Code reports
+session for independent evaluation. Full instructions load on invoke. For plugin version 3.1.1, Claude Code reports
 about 189 tokens of discovery metadata per session:
 
 | Component | Purpose | Always on | On invoke |
@@ -219,8 +219,8 @@ codex plugin marketplace remove agent-manifesto
 
 ### When your model or tools change
 
-Start migrations from the smallest prompt that preserves your contract. Retest old instructions: durable context
-stays, while scaffolding must keep earning its place.
+Review the surrounding instructions after a significant model or tool change. Preserve necessary project knowledge
+and authority boundaries; remove duplication, outdated guidance, and scaffolding without a present need.
 
 ---
 

@@ -1,8 +1,7 @@
 # Evaluation Cases
 
-Principle 8 of [MANIFEST.md](../MANIFEST.md) says the framework must be retested against a fresh minimal baseline
-after a significant model or tool change, and at least every six months. These cases make that question answerable
-instead of rhetorical.
+These cases check the framework's behavior, including the restraint and preservation expected by Principle 8 of
+[MANIFEST.md](../MANIFEST.md). Reviewing a project's instructions does not require running a benchmark.
 
 They are behavioral, not unit tests. A landscape is good or bad because of what a model does with it, so most
 assertions are judged by a reviewer against a real run. The runner automates only what a machine can decide.
@@ -63,18 +62,10 @@ transcripts, diffs, and judgments as a GitHub Actions artifact. Ordinary validat
 validates the case definitions and runner with regression tests. A release cannot tag or publish until the live gate
 passes.
 
-## Comparing against a baseline
-
-To answer whether the harness still earns its place, run a case twice: once with the landscape installed, once against
-a fresh session with no framework at all. If the results are equivalent, the scaffolding under test is no longer
-carrying weight and should be removed. That is the intended outcome of a maintenance review, not a failure of it.
-
 ## The native harness
 
-Claude Code ships `claude plugin eval`, which runs `evals/**/case.yaml` cases with LLM graders and an `--ablation
-with-without` mode that scores a run against a no-plugin baseline. That ablation is a direct mechanical answer to
-Principle 8, and it is where these cases should eventually live — Principle 5 prefers a tool's native mechanism over a
-local imitation.
+Claude Code ships `claude plugin eval`, which runs `evals/**/case.yaml` cases with LLM graders. Principle 5 prefers a
+tool's native mechanism over a local imitation once its behavior is verified.
 
 It remains early access and is not enabled on the account maintaining this suite, so its authoring schema and execution
 cannot yet be verified end to end. The interim runner uses `cases/*.yml`, not `case.yaml`, so the layouts do not collide

@@ -1,5 +1,5 @@
 ---
-version: 3.0.0
+version: 3.1.1
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifesto/blob/main/plugins/agent-manifesto/agents/instruction-evaluator.md
 name: instruction-evaluator

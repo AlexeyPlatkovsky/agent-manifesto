@@ -1,5 +1,5 @@
 ---
-version: 3.0.0
+version: 3.1.1
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifesto/blob/main/plugins/agent-manifesto/MANIFEST.md
 ---
@@ -50,7 +50,7 @@ An artifact must not absorb a concern that has a better home.
 
 ## Principles
 
-### 1. Supply What The Model Cannot Know
+### 1. Supply What The Model Cannot Reliably Infer
 
 Record business facts, project realities, user preferences, authoritative sources, and explicit authority boundaries.
 Do not explain general practices a capable current model already understands.
@@ -60,12 +60,12 @@ Ask of every instruction:
 > Would a better model make this unnecessary?
 
 If yes, treat it as temporary scaffolding and require evidence for keeping it. If no, preserve it as durable context,
-policy, or authority.
+policy, or authority. Put information in the smallest scope where it is reliably available when needed.
 
 ### 2. Keep The Default Context Small
 
-Always-loaded files are a starting brief and map. Load task policies, procedures, specialist responsibilities, and
-detailed facts only when relevant.
+Always-loaded files are a starting brief and map. Load specialized guidance when the task needs information or
+constraints it supplies; a shared technology or topic alone is not sufficient reason to load it.
 
 Splitting a large file does not reduce context when every part is still loaded at startup.
 
@@ -86,7 +86,8 @@ Create a skill, workflow, agent, contract, context file, or adapter only for a p
 - a recurring responsibility that materially benefits from fresh context can justify an agent
 - a structured boundary that consumers must validate can justify a contract
 
-Do not create empty layers or speculative capability libraries.
+When deriving instructions from completed work, preserve the reusable constraint or procedure, not the incidental
+sequence of one run. Do not create empty layers or speculative capability libraries.
 
 ### 5. Use Native Capabilities
 
@@ -100,6 +101,9 @@ Prompt instructions influence behavior; they do not guarantee it. Put non-negoti
 validation in permissions, hooks, schemas, tests, linters, or other deterministic controls when the selected tool makes
 that possible.
 
+Use existing reliable tools for repeatable operations. Instructions should supply the intent, constraints, and interface
+the model needs to use them.
+
 ### 7. Preserve User Authority
 
 Ask before destructive, external, costly, or authority-expanding actions. Consent is scoped to the action approved.
@@ -107,11 +111,10 @@ Ask before destructive, external, costly, or authority-expanding actions. Consen
 Do not infer permission to commit, push, deploy, publish, contact people, change production, expose data, or restructure
 the user's landscape.
 
-### 8. Retest The Harness
+### 8. Review The Harness
 
-Models and tools change. After a significant change, or at least every six months, compare the active landscape with a
-fresh minimal baseline on representative work. Preserve durable context and proven guardrails; keep model-compensation
-scaffolding only while current evidence shows that it still helps.
+After a significant model or tool change, review the surrounding instructions. Preserve necessary project knowledge and
+authority boundaries. Remove duplication, outdated guidance, and scaffolding that no longer addresses a present need.
 
 The framework is maintained by subtraction as well as addition.
 

@@ -2,7 +2,7 @@
 name: ai-landscape
 description: Create, review, extend, adopt tools into, or retire an AI landscape of context, skills, workflows, agents, contracts, and enforcement.
 metadata:
-  version: 3.0.0
+  version: 3.1.1
 ---
 
 # AI Landscape

@@ -3,7 +3,7 @@
   "$id": "https://github.com/AlexeyPlatkovsky/agent-manifesto/blob/main/plugins/agent-manifesto/contracts/instruction-evaluation.schema.json",
   "title": "Instruction evaluation",
   "description": "Structured result returned by the instruction-evaluator agent.",
-  "x-framework-version": "3.0.0",
+  "x-framework-version": "3.1.1",
   "type": "object",
   "additionalProperties": false,
   "required": [
