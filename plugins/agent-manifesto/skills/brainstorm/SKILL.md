@@ -2,7 +2,7 @@
 name: brainstorm
 description: Resolve an open decision with meaningful alternatives before work depends on it.
 metadata:
-  version: 3.0.0
+  version: 3.1.1
 ---
 
 # Brainstorm

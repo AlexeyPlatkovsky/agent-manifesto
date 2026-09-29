@@ -1,5 +1,5 @@
 ---
-version: 3.0.0
+version: 3.1.1
 project: agent-manifest
 url: https://github.com/AlexeyPlatkovsky/agent-manifesto/blob/main/plugins/agent-manifesto/IMPLEMENTATION.md
 ---
@@ -273,7 +273,7 @@ automatically; passing `.` remains explicit and portable.
 
 ## Maintenance
 
-Review a landscape after a significant model or tool change and at least every six months.
+Review a landscape after a significant model or tool change.
 
 For each instruction, determine whether it is:
 
@@ -282,7 +282,8 @@ For each instruction, determine whether it is:
 - authority boundary
 - temporary scaffolding
 
-Test temporary scaffolding against a fresh minimal baseline. Remove it when representative work no longer benefits.
+Review instructions against current project needs. Preserve necessary knowledge and authority boundaries; remove
+duplication, outdated guidance, and scaffolding that no longer addresses a present need.
 Keep a normal version-control history of deletions; do not maintain an always-loaded historical log.
 
 The framework's own cases live in `evals/`. Run them after a model or tool change; a landscape that has drifted toward

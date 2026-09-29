@@ -1,4 +1,4 @@
-version: 3.0.0
+version: 3.1.1
 name: landscape-extension
 description: Add or change one bounded landscape capability while preserving existing authority and simplicity.
 applies_when:

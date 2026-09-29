@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """Prepare and check the framework's own behavioral evaluation cases.
 
-Principle 8 asks whether the harness still earns its place against a fresh
-minimal baseline. That question is behavioral, so these cases are judged, not
-asserted: the runner automates what a machine can decide and prints the rest as
-a checklist for the reviewer.
+These cases check the framework's behavior, including restraint during review.
+The runner automates what a machine can decide and requires evidence-backed
+judgments for behavioral assertions.
 
     python3 evals/run.py --list
     python3 evals/run.py plain-notes-setup            # stage a working copy

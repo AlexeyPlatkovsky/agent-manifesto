@@ -1,4 +1,4 @@
-version: 3.0.0
+version: 3.1.1
 name: landscape-setup
 description: Create a minimal AI landscape or adjust an existing one without discarding useful project-specific context.
 applies_when:
