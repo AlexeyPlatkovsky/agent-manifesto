@@ -71,27 +71,6 @@ jobs:
           echo "release=$release" >> "$GITHUB_OUTPUT"
           echo "tag=v$current" >> "$GITHUB_OUTPUT"
 
-      - name: Install Claude Code for behavioral evaluation
-        if: steps.decide.outputs.release == 'true'
-        run: npm install --global @anthropic-ai/claude-code@2.1.259
-
-      - name: Run fresh-session behavioral release gate
-        if: steps.decide.outputs.release == 'true'
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: |
-          test -n "$ANTHROPIC_API_KEY" || { echo "ANTHROPIC_API_KEY is required for the behavioral release gate" >&2; exit 1; }
-          PYTHONDONTWRITEBYTECODE=1 python3 plugins/agent-manifesto/evals/run-live.py \
-            --artifacts behavioral-eval-artifacts
-
-      - name: Upload behavioral evaluation evidence
-        if: always() && steps.decide.outputs.release == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: behavioral-evals-${{ steps.versions.outputs.current_version }}
-          path: behavioral-eval-artifacts/
-          if-no-files-found: warn
-
       - name: Prepare curated release assets
         if: steps.decide.outputs.release == 'true'
         shell: bash

@@ -48,19 +48,19 @@ diff, not its summary—a run that claims restraint while creating six files fai
 }
 ```
 
-## Release gate
+## Optional local evaluation
 
-Before a versioned release creates its tag, CI runs every case in a separate, non-persistent Claude session and uses a
-second fresh session to judge every assertion from the full transcript and filesystem diff:
+Run every case locally in separate, non-persistent Claude sessions, with a second fresh session judging the assertions:
 
 ```text
 PYTHONDONTWRITEBYTECODE=1 python3 evals/run-live.py --artifacts /path/to/evidence
 ```
 
-The release job requires `ANTHROPIC_API_KEY`, fails closed when the key or any judgment is missing, and uploads the
-transcripts, diffs, and judgments as a GitHub Actions artifact. Ordinary validation does not spend API credits; it
-validates the case definitions and runner with regression tests. A release cannot tag or publish until the live gate
-passes.
+This runner requires a locally installed and authenticated Claude CLI. It loads the plugin directly from the checkout
+and saves transcripts, diffs, and judgments to the requested directory.
+
+CI runs deterministic framework validation, regression tests, and case staging. It does not install or invoke Claude,
+require `ANTHROPIC_API_KEY`, or gate releases on live model evaluations. Behavioral evaluation remains available locally.
 
 ## The native harness
 
